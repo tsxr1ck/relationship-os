@@ -327,7 +327,6 @@ export default function OnboardingPage() {
                   setFullName(e.target.value);
                   if (nameError) setNameError('');
                 }}
-                error={nameError}
                 onKeyDown={(e) => e.key === 'Enter' && handleSaveProfile()}
                 autoFocus
               />
@@ -817,7 +816,6 @@ export default function OnboardingPage() {
                   setJoinCode(e.target.value.toUpperCase());
                   if (coupleError) setCoupleError('');
                 }}
-                error={coupleError}
                 onKeyDown={(e) => e.key === 'Enter' && handleJoinCouple()}
                 autoFocus
                 className="text-center text-xl tracking-[0.15em] font-mono"

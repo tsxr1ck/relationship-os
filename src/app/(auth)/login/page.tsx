@@ -23,7 +23,7 @@ export default function LoginPage() {
     setError('');
 
     const { error } = await signInWithPassword(email, password);
-    
+
     if (error) {
       setError(error.message);
       setLoading(false);

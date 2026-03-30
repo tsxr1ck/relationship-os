@@ -190,11 +190,10 @@ function PlanItemCard({
   return (
     <motion.div variants={itemVariants}>
       <Card
-        className={`overflow-hidden transition-all ${
-          isToday && !isCompleted && !isSkipped
+        className={`overflow-hidden transition-all ${isToday && !isCompleted && !isSkipped
             ? 'ring-2 ring-primary/30 shadow-md shadow-primary/10'
             : ''
-        } ${isCompleted ? 'opacity-60' : ''} ${isSkipped ? 'opacity-40' : ''}`}
+          } ${isCompleted ? 'opacity-60' : ''} ${isSkipped ? 'opacity-40' : ''}`}
       >
         <CardContent className="pt-0 pb-0">
           {/* Today indicator */}
@@ -213,13 +212,12 @@ function PlanItemCard({
             <button
               onClick={(e) => { e.stopPropagation(); onToggle(); }}
               disabled={toggling || isSkipped}
-              className={`w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all shrink-0 ${
-                isCompleted
+              className={`w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all shrink-0 ${isCompleted
                   ? 'bg-primary border-primary'
                   : isSkipped
                     ? 'bg-surface_container_low border-outline_variant'
                     : 'border-outline_variant hover:border-primary'
-              } ${toggling ? 'opacity-50' : ''}`}
+                } ${toggling ? 'opacity-50' : ''}`}
             >
               {toggling ? (
                 <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
@@ -241,9 +239,9 @@ function PlanItemCard({
                   {item.durationMinutes}m
                 </span>
                 {item.requiresBoth ? (
-                  <Users className="h-3 w-3 text-on_surface_variant" title="Ambos" />
+                  <Users className="h-3 w-3 text-on_surface_variant" />
                 ) : (
-                  <User className="h-3 w-3 text-on_surface_variant" title="Individual" />
+                  <User className="h-3 w-3 text-on_surface_variant" />
                 )}
               </div>
               <h3 className={`font-semibold text-on_surface text-sm ${isCompleted ? 'line-through' : ''}`}>
