@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-dim": "#c5d5f7",
+              "on-background": "#252f41",
+              "secondary-fixed": "#bfd1ff",
+              "primary-fixed": "#b6a4fd",
+              "on-error-container": "#510017",
+              "surface-container-low": "#ecf0ff",
+              "on-primary": "#f6f0ff",
+              "on-primary-fixed": "#1a0057",
+              "on-tertiary-fixed-variant": "#6e422c",
+              "outline": "#6d778c",
+              "on-secondary-container": "#054496",
+              "on-tertiary-fixed": "#4c2613",
+              "surface-container-high": "#d6e3ff",
+              "surface": "#f5f6ff",
+              "primary-dim": "#534293",
+              "on-secondary": "#f0f2ff",
+              "tertiary-fixed-dim": "#eeb095",
+              "secondary-dim": "#174d9f",
+              "tertiary-container": "#febea2",
+              "inverse-surface": "#040e1f",
+              "primary-container": "#b6a4fd",
+              "secondary-container": "#bfd1ff",
+              "inverse-on-surface": "#939db3",
+              "secondary-fixed-dim": "#aac3ff",
+              "outline-variant": "#a3adc4",
+              "on-error": "#ffefef",
+              "background": "#f5f6ff",
+              "error": "#b41340",
+              "error-dim": "#a70138",
+              "error-container": "#f74b6d",
+              "surface-container-highest": "#ceddfe",
+              "inverse-primary": "#b6a4fd",
+              "on-primary-container": "#342172",
+              "surface-bright": "#f5f6ff",
+              "on-surface": "#252f41",
+              "on-secondary-fixed": "#003172",
+              "tertiary-fixed": "#febea2",
+              "on-surface-variant": "#525c70",
+              "surface-container": "#dfe8ff",
+              "tertiary": "#7f503a",
+              "surface-container-lowest": "#ffffff",
+              "surface-variant": "#ceddfe",
+              "on-tertiary-container": "#643924",
+              "primary": "#5f4fa0",
+              "tertiary-dim": "#72442f",
+              "surface-tint": "#5f4fa0",
+              "primary-fixed-dim": "#a897ee",
+              "on-primary-fixed-variant": "#3d2b7b",
+              "on-secondary-fixed-variant": "#194ea0",
+              "on-tertiary": "#fff0ea",
+              "secondary": "#2959ab"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Manrope"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface min-h-screen">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-[0_12px_40px_rgba(37,47,65,0.06)] h-20">
+<div class="flex justify-between items-center px-8 h-full max-w-screen-2xl mx-auto">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary text-2xl" data-icon="arrow_back">arrow_back</span>
+<h1 class="text-xl font-semibold tracking-tight text-[#252f41] dark:text-slate-100 font-headline">Relational Sanctuary</h1>
+</div>
+<div class="flex items-center gap-6">
+<div class="hidden md:flex gap-8">
+<span class="text-[#252f41]/60 dark:text-slate-400 font-medium hover:bg-[#f5f6ff] transition-colors px-3 py-2 rounded-lg">Inicio</span>
+<span class="text-[#5f4fa0] dark:text-[#b6a4fd] font-medium px-3 py-2 rounded-lg">Descubrir</span>
+<span class="text-[#252f41]/60 dark:text-slate-400 font-medium hover:bg-[#f5f6ff] transition-colors px-3 py-2 rounded-lg">Nosotros</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="favorite">favorite</span>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="notifications">notifications</span>
+<div class="w-10 h-10 rounded-full bg-primary-container overflow-hidden">
+<img alt="User profile" data-alt="Close-up portrait of a smiling woman with warm lighting and a soft bokeh background representing a welcoming user profile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQnbEBjKjfErVlicAIaKV5a-djqi22AUtGaDuQqr2YVn0-r99JjKLEUN5kHE39RNbUbL5Odw6B0nO5oeWjT86DFu-5PMCjchWzFQWkNHYx8k_l0Epvd6B84jMR96WFcX66OimgX2sCoPfp8gSGpnbokjCkn2ATVabLH5wrZZtahrVvu9ZpBCnxuzUw6B3EItP5vb5PlDpc6gRNE8vjMJw4mTHKGGIQSZV9TJn6nep2Y7uur7LORdWHG9jqeW96k1nwU4VAEHJhVC9O"/>
+</div>
+</div>
+</div>
+</div>
+</header>
+<main class="pt-32 pb-32 px-6 max-w-4xl mx-auto flex flex-col items-center">
+<!-- Header Section -->
+<div class="w-full mb-12 text-center md:text-left">
+<span class="bg-tertiary-container/20 text-tertiary px-4 py-1.5 rounded-full text-xs font-label font-semibold tracking-widest uppercase mb-4 inline-block">Current Session</span>
+<h2 class="text-3xl md:text-5xl font-headline font-bold text-on-surface tracking-tight mb-4 leading-tight">Conversation: Navigating Differences in Space</h2>
+<p class="text-on-surface-variant text-lg max-w-2xl font-medium">Deepen your connection by exploring personal boundaries and shared environments.</p>
+</div>
+<!-- Deck Motif / Interaction Area -->
+<div class="relative w-full max-w-xl aspect-[4/5] md:aspect-[3/4] flex flex-col items-center justify-center perspective-1000">
+<!-- Background Stacked Cards -->
+<div class="absolute w-[90%] h-full bg-surface-container-high rounded-xl -rotate-6 translate-y-4 shadow-sm opacity-40"></div>
+<div class="absolute w-[95%] h-full bg-surface-container-highest rounded-xl rotate-3 translate-y-2 shadow-md opacity-70"></div>
+<!-- Active Prompt Card -->
+<div class="relative w-full h-full bg-surface-container-lowest rounded-xl shadow-[0_20px_60px_rgba(37,47,65,0.08)] p-8 md:p-12 flex flex-col justify-between overflow-hidden border border-outline-variant/10">
+<!-- Card Header -->
+<div class="flex justify-between items-start">
+<div class="flex flex-col gap-1">
+<span class="text-primary font-label font-bold text-[10px] uppercase tracking-[0.2em]">Prompt 04 / 12</span>
+<div class="h-1 w-12 bg-primary rounded-full"></div>
+</div>
+<span class="material-symbols-outlined text-primary-container" data-icon="auto_awesome" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+<!-- Prompt Content -->
+<div class="flex-grow flex flex-col justify-center py-8">
+<p class="text-2xl md:text-3xl font-headline font-semibold text-on-surface leading-snug">
+                        What does "me time" look like for you on a busy weekend?
+                    </p>
+</div>
+<!-- Turn Indicator & Interaction -->
+<div class="pt-8 border-t border-surface-container">
+<div class="flex items-center gap-3 mb-8">
+<div class="relative">
+<div class="w-12 h-12 rounded-full border-2 border-primary-container p-0.5">
+<img alt="Partner profile" class="rounded-full w-full h-full object-cover" data-alt="Portrait of a young man with a gentle expression and warm natural lighting, representing the partner in a relationship app" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDEss6pMsSMY2SdEut25vPMtgbPsg-mPTuhoPxrHerOjQIABwe8wLA4bgMsjRuk6lcanbtYC560xnQddVHR9heczQ1czllkRSidwclK7phXSZq7i9Nmfr6ym1cJip0nxf5kJs6hYO1Dd7-fbZ7IxJgFYTB2FL27_ejTkfGZr2CKD_yDd_pKyYZFcoBPT5hig4_lsgmSOASd3uN43C0xyGJyRwyGCZxYczUIPARp05FAt1EWpskss0xeD-fjOMLD1bsGfM9UKk4fpcyS"/>
+</div>
+<div class="absolute -bottom-1 -right-1 bg-primary text-white p-1 rounded-full text-[8px]">
+<span class="material-symbols-outlined !text-xs" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</div>
+<div>
+<p class="text-sm font-headline font-bold text-on-surface">Partner has shared</p>
+<p class="text-xs font-label text-on-surface-variant">Click reveal once you have shared your thoughts.</p>
+</div>
+</div>
+<div class="flex flex-col gap-3">
+<button class="w-full bg-gradient-to-r from-primary to-primary-container text-on-primary py-4 px-6 rounded-xl font-headline font-bold text-lg shadow-lg hover:opacity-90 active:scale-95 transition-all">
+                            Shared my thoughts
+                        </button>
+<div class="grid grid-cols-2 gap-3">
+<button class="bg-surface-container-low text-primary py-3 px-4 rounded-xl font-headline font-semibold text-sm hover:bg-surface-container-high transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined !text-lg" data-icon="bookmark">bookmark</span>
+                                Save as agreement
+                            </button>
+<button class="bg-surface-container-low text-on-surface-variant py-3 px-4 rounded-xl font-headline font-semibold text-sm hover:bg-surface-container-high transition-colors flex items-center justify-center gap-2">
+                                Next Prompt
+                                <span class="material-symbols-outlined !text-lg" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Abstract Decor -->
+<div class="absolute -bottom-16 -right-16 w-48 h-48 bg-primary-container/10 rounded-full blur-3xl"></div>
+</div>
+</div>
+<!-- Supportive Pills -->
+<div class="mt-12 flex flex-wrap justify-center gap-4">
+<div class="flex items-center gap-2 bg-white px-5 py-2.5 rounded-full shadow-sm border border-outline-variant/5">
+<span class="material-symbols-outlined text-tertiary !text-xl" data-icon="lightbulb">lightbulb</span>
+<span class="text-sm font-headline font-medium text-on-surface-variant">Tips for active listening</span>
+</div>
+<div class="flex items-center gap-2 bg-white px-5 py-2.5 rounded-full shadow-sm border border-outline-variant/5">
+<span class="material-symbols-outlined text-primary !text-xl" data-icon="psychology">psychology</span>
+<span class="text-sm font-headline font-medium text-on-surface-variant">Why this matters</span>
+</div>
+</div>
+</main>
+<!-- SideNavBar (Desktop) -->
+<aside class="h-screen w-72 fixed left-0 top-0 hidden lg:flex flex-col bg-[#f5f6ff] dark:bg-slate-950 p-6 gap-4 z-40">
+<div class="mb-8 pt-4">
+<h1 class="text-lg font-bold text-[#252f41] dark:text-white font-headline">Relational Sanctuary</h1>
+<p class="text-xs text-on-surface-variant font-medium">Together for 2 years</p>
+</div>
+<nav class="flex flex-col gap-2">
+<div class="flex items-center gap-4 p-4 text-[#252f41]/70 dark:text-slate-400 hover:translate-x-1 transition-transform duration-300 rounded-2xl cursor-pointer">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-headline font-medium">Inicio</span>
+</div>
+<div class="flex items-center gap-4 p-4 bg-white dark:bg-slate-800 text-[#5f4fa0] dark:text-[#b6a4fd] rounded-2xl shadow-sm cursor-pointer">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+<span class="font-headline font-medium">Descubrir</span>
+</div>
+<div class="flex items-center gap-4 p-4 text-[#252f41]/70 dark:text-slate-400 hover:translate-x-1 transition-transform duration-300 rounded-2xl cursor-pointer">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-headline font-medium">Nosotros</span>
+</div>
+<div class="flex items-center gap-4 p-4 text-[#252f41]/70 dark:text-slate-400 hover:translate-x-1 transition-transform duration-300 rounded-2xl cursor-pointer">
+<span class="material-symbols-outlined" data-icon="emoji_events">emoji_events</span>
+<span class="font-headline font-medium">Retos</span>
+</div>
+<div class="flex items-center gap-4 p-4 text-[#252f41]/70 dark:text-slate-400 hover:translate-x-1 transition-transform duration-300 rounded-2xl cursor-pointer">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-headline font-medium">Perfil</span>
+</div>
+</nav>
+<div class="mt-auto bg-primary text-on-primary p-6 rounded-3xl flex flex-col gap-3">
+<p class="text-sm font-headline font-bold">Daily Check-in</p>
+<p class="text-xs opacity-80">How are you feeling about your connection today?</p>
+<button class="mt-2 bg-white text-primary py-2.5 rounded-xl text-xs font-bold shadow-sm active:scale-95 transition-transform">Start Session</button>
+</div>
+</aside>
+<!-- BottomNavBar (Mobile) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-6 pb-8 pt-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl lg:hidden rounded-t-[3rem] shadow-[0_-8px_30px_rgba(0,0,0,0.04)]">
+<div class="flex flex-col items-center justify-center text-[#252f41]/40 dark:text-slate-500 p-2">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-inter text-[8px] font-semibold uppercase tracking-widest mt-1">Inicio</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-[#b6a4fd]/10 text-[#5f4fa0] dark:text-[#b6a4fd] rounded-full p-4 active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+<span class="font-inter text-[8px] font-semibold uppercase tracking-widest mt-1">Descubrir</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#252f41]/40 dark:text-slate-500 p-2">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="font-inter text-[8px] font-semibold uppercase tracking-widest mt-1">Nosotros</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#252f41]/40 dark:text-slate-500 p-2">
+<span class="material-symbols-outlined" data-icon="auto_awesome">auto_awesome</span>
+<span class="font-inter text-[8px] font-semibold uppercase tracking-widest mt-1">Retos</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#252f41]/40 dark:text-slate-500 p-2">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+<span class="font-inter text-[8px] font-semibold uppercase tracking-widest mt-1">Perfil</span>
+</div>
+</nav>
+</body></html>

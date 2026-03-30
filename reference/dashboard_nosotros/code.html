@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Relational Sanctuary - Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-dim": "#c5d5f7",
+              "on-background": "#252f41",
+              "secondary-fixed": "#bfd1ff",
+              "primary-fixed": "#b6a4fd",
+              "on-error-container": "#510017",
+              "surface-container-low": "#ecf0ff",
+              "on-primary": "#f6f0ff",
+              "on-primary-fixed": "#1a0057",
+              "on-tertiary-fixed-variant": "#6e422c",
+              "outline": "#6d778c",
+              "on-secondary-container": "#054496",
+              "on-tertiary-fixed": "#4c2613",
+              "surface-container-high": "#d6e3ff",
+              "surface": "#f5f6ff",
+              "primary-dim": "#534293",
+              "on-secondary": "#f0f2ff",
+              "tertiary-fixed-dim": "#eeb095",
+              "secondary-dim": "#174d9f",
+              "tertiary-container": "#febea2",
+              "inverse-surface": "#040e1f",
+              "primary-container": "#b6a4fd",
+              "secondary-container": "#bfd1ff",
+              "inverse-on-surface": "#939db3",
+              "secondary-fixed-dim": "#aac3ff",
+              "outline-variant": "#a3adc4",
+              "on-error": "#ffefef",
+              "background": "#f5f6ff",
+              "error": "#b41340",
+              "error-dim": "#a70138",
+              "error-container": "#f74b6d",
+              "surface-container-highest": "#ceddfe",
+              "inverse-primary": "#b6a4fd",
+              "on-primary-container": "#342172",
+              "surface-bright": "#f5f6ff",
+              "on-surface": "#252f41",
+              "on-secondary-fixed": "#003172",
+              "tertiary-fixed": "#febea2",
+              "on-surface-variant": "#525c70",
+              "surface-container": "#dfe8ff",
+              "tertiary": "#7f503a",
+              "surface-container-lowest": "#ffffff",
+              "surface-variant": "#ceddfe",
+              "on-tertiary-container": "#643924",
+              "primary": "#5f4fa0",
+              "tertiary-dim": "#72442f",
+              "surface-tint": "#5f4fa0",
+              "primary-fixed-dim": "#a897ee",
+              "on-primary-fixed-variant": "#3d2b7b",
+              "on-secondary-fixed-variant": "#194ea0",
+              "on-tertiary": "#fff0ea",
+              "secondary": "#2959ab"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Manrope"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-surface font-body text-on-surface">
+<!-- Top Navigation (Mobile/Responsive Anchor) -->
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-[0_12px_40px_rgba(37,47,65,0.06)] h-20 flex justify-between items-center px-8 max-w-screen-2xl mx-auto left-0 right-0">
+<div class="flex items-center gap-4">
+<span class="text-xl font-semibold tracking-tight text-[#252f41] dark:text-slate-100 font-headline">Relational Sanctuary</span>
+</div>
+<div class="flex items-center gap-6">
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-[#f5f6ff] transition-colors p-2 rounded-full">notifications</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-[#f5f6ff] transition-colors p-2 rounded-full">favorite</button>
+<div class="h-10 w-10 rounded-full overflow-hidden border-2 border-primary-container">
+<img alt="User profile with connection status" class="w-full h-full object-cover" data-alt="Close up portrait of a smiling couple looking at each other in soft afternoon sunlight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDEy_v0WUNMfK7Dk97pAasOhgBzShfzi9K6Vo9gww630KewzycrLQjaKQIA0FaryQ0eUOkl2dz3VvXKMa8UVN3kvEom--LntmqYyZKjmA_Fuam43-lbGW132Gwu7E2YOT7jzZEN5xBBVjMctN15TWLwRSvlyCnTY8rrMqObIR5n2iDFDdHVHNRm8jqA5EHYIdrFLaJQkaZCHUJjuRZVPAeiCnug-cX41Dyg3G85iJsz_-3vfHTCRAhHRFYb6bGr0G0NVPsE5YomSzn7"/>
+</div>
+</div>
+</header>
+<!-- Side Navigation (Web Anchor) -->
+<aside class="h-screen w-72 fixed left-0 top-0 hidden lg:flex flex-col p-6 gap-4 bg-[#f5f6ff] dark:bg-slate-950 bg-gradient-to-r from-transparent to-[#252f41]/5 z-40">
+<div class="mb-10 mt-8 px-2">
+<h1 class="text-lg font-bold text-[#252f41] dark:text-white font-headline">Relational Sanctuary</h1>
+<p class="text-sm font-medium text-on-surface-variant opacity-70">Together for 2 years</p>
+</div>
+<nav class="flex flex-col gap-2">
+<a class="bg-white dark:bg-slate-800 text-[#5f4fa0] dark:text-[#b6a4fd] rounded-2xl shadow-sm p-4 flex items-center gap-4 transition-transform duration-300 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-manrope text-sm font-medium">Inicio</span>
+</a>
+<a class="text-[#252f41]/70 dark:text-slate-400 hover:text-[#5f4fa0] p-4 flex items-center gap-4 transition-transform duration-300 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">explore</span>
+<span class="font-manrope text-sm font-medium">Descubrir</span>
+</a>
+<a class="text-[#252f41]/70 dark:text-slate-400 hover:text-[#5f4fa0] p-4 flex items-center gap-4 transition-transform duration-300 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-manrope text-sm font-medium">Nosotros</span>
+</a>
+<a class="text-[#252f41]/70 dark:text-slate-400 hover:text-[#5f4fa0] p-4 flex items-center gap-4 transition-transform duration-300 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">emoji_events</span>
+<span class="font-manrope text-sm font-medium">Retos</span>
+</a>
+<a class="text-[#252f41]/70 dark:text-slate-400 hover:text-[#5f4fa0] p-4 flex items-center gap-4 transition-transform duration-300 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-manrope text-sm font-medium">Perfil</span>
+</a>
+</nav>
+<div class="mt-auto p-4 bg-primary-container/20 rounded-3xl border border-primary-container/10">
+<p class="text-xs font-label uppercase tracking-widest text-primary mb-2">Current Session</p>
+<button class="w-full py-3 bg-primary text-white rounded-2xl font-semibold text-sm hover:opacity-90 transition-all active:scale-95">Start Session</button>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="lg:ml-72 pt-32 pb-32 px-6 md:px-12 max-w-7xl mx-auto min-h-screen">
+<!-- Relationship Hero Header -->
+<section class="mb-16">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div>
+<h2 class="text-5xl md:text-6xl font-semibold font-headline tracking-tight text-on-background mb-4">Hello Alex &amp; Jordan</h2>
+<div class="flex flex-wrap gap-3">
+<span class="px-4 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-medium">Together for 2 years</span>
+<span class="px-4 py-1.5 bg-tertiary-container/30 text-tertiary-dim rounded-full text-sm font-medium flex items-center gap-2">
+<span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+                            12 weeks growing
+                        </span>
+</div>
+</div>
+<div class="flex -space-x-4 mb-2">
+<img class="w-16 h-16 rounded-full border-4 border-surface object-cover" data-alt="Close up of a person laughing with soft backlighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCaDtLl91_51eDZmOQDA5BDIB_-SbVg8A6LmIekU1xIH2tg_RvrPHMr1HH23YxJJtKhuXky6bIGpb1W11N53wMQYVFJImtdIu8kuJt6rQU60bLJblk5Gw_A6J_Rsa_JcRtjmUbdfsvTLVQBHJc-gh-lkGmvG1eHaGGBU0PpGeJPLAfi6UAEEOAFfO23RYPYAbc0nWqzjg3p8Eu_5evJL6DkGmeKz-0G8EQ0LuN3FkLaEY3n5pTgXkD3D8mfEvn_RNTT15r9naOJ3Jny"/>
+<img class="w-16 h-16 rounded-full border-4 border-surface object-cover" data-alt="Close up of a person smiling gently at the camera in a modern cafe" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBa5_6AptzFC85EETVpKClRpsHbItxewPbW2E9LlpLekxUSZZ_rr3SMPGAmVBo8xh0hUPGDKSPkGIuWT-RadPK1Ri3NzaADjVGu2BdbjimLlPGmiO1iVB64_Bf43BYas-n9XVcIZHXdITT6eJWks7CDOE1PbWMp82qRfaGkA82VwWFUhnlLGj-lpNQAJDbyOaLdnHGN680F-qWeK1UQvfkkiHOBbPFW_WOMZwe0an-h3weov5splxhexSGXBs7C8qABUjeImA48uu38"/>
+</div>
+</div>
+</section>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Connection Map Overview (Bento Style) -->
+<div class="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="md:col-span-2 bg-surface-container-lowest p-8 rounded-xl shadow-[0_12px_40px_rgba(37,47,65,0.04)] flex flex-col justify-between min-h-[300px] relative overflow-hidden group">
+<div class="relative z-10">
+<h3 class="text-2xl font-headline font-semibold mb-2">Connection Map</h3>
+<p class="text-on-surface-variant max-w-xs">A real-time visual of your relationship's macro-layers.</p>
+</div>
+<!-- Simplified Visual Radar/Grid -->
+<div class="grid grid-cols-2 gap-3 mt-8 relative z-10">
+<div class="bg-[#b6a4fd]/10 p-6 rounded-lg group-hover:scale-[1.02] transition-transform">
+<span class="text-[#5f4fa0] font-semibold block mb-1">Conexión</span>
+<div class="h-2 w-full bg-white rounded-full overflow-hidden">
+<div class="h-full bg-[#5f4fa0] w-[85%]"></div>
+</div>
+</div>
+<div class="bg-secondary-container/20 p-6 rounded-lg group-hover:scale-[1.02] transition-transform">
+<span class="text-secondary font-semibold block mb-1">Cuidado</span>
+<div class="h-2 w-full bg-white rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-[70%]"></div>
+</div>
+</div>
+<div class="bg-tertiary-container/20 p-6 rounded-lg group-hover:scale-[1.02] transition-transform">
+<span class="text-tertiary font-semibold block mb-1">Choque</span>
+<div class="h-2 w-full bg-white rounded-full overflow-hidden">
+<div class="h-full bg-tertiary w-[30%]"></div>
+</div>
+</div>
+<div class="bg-[#d1fae5] p-6 rounded-lg group-hover:scale-[1.02] transition-transform">
+<span class="text-[#065f46] font-semibold block mb-1">Camino</span>
+<div class="h-2 w-full bg-white rounded-full overflow-hidden">
+<div class="h-full bg-[#065f46] w-[60%]"></div>
+</div>
+</div>
+</div>
+<!-- Decorative Abstract Element -->
+<div class="absolute -right-16 -top-16 w-64 h-64 bg-primary-container/10 rounded-full blur-3xl"></div>
+</div>
+<!-- Insight Card -->
+<div class="md:col-span-2 bg-gradient-to-br from-primary to-primary-dim p-8 rounded-xl text-on-primary flex flex-col justify-center">
+<div class="flex items-center gap-3 mb-4">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">insights</span>
+<h4 class="text-xl font-headline font-semibold">Strength of the week</h4>
+</div>
+<p class="text-2xl font-medium mb-4">Conversational intimacy</p>
+<p class="text-on-primary/80 leading-relaxed">
+                        Your check-ins show a significant increase in vulnerability this week. Sharing small fears has deepened your mutual trust and safety.
+                    </p>
+</div>
+</div>
+<!-- Side Column: Actions & Activity -->
+<div class="lg:col-span-4 flex flex-col gap-6">
+<!-- Quick Actions -->
+<div class="flex flex-col gap-3">
+<h5 class="text-sm font-label uppercase tracking-widest text-on-surface-variant px-2">Quick Actions</h5>
+<button class="w-full p-5 bg-white rounded-xl shadow-sm hover:shadow-md transition-all text-left flex items-center justify-between group active:scale-[0.98]">
+<div class="flex items-center gap-4">
+<span class="w-12 h-12 rounded-full bg-primary-container/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">quiz</span>
+</span>
+<span class="font-semibold">Start Daily Question</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
+</button>
+<button class="w-full p-5 bg-white rounded-xl shadow-sm hover:shadow-md transition-all text-left flex items-center justify-between group active:scale-[0.98]">
+<div class="flex items-center gap-4">
+<span class="w-12 h-12 rounded-full bg-secondary-container/20 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined">style</span>
+</span>
+<span class="font-semibold">Explore Next Deck</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
+</button>
+<button class="w-full p-5 bg-white rounded-xl shadow-sm hover:shadow-md transition-all text-left flex items-center justify-between group active:scale-[0.98]">
+<div class="flex items-center gap-4">
+<span class="w-12 h-12 rounded-full bg-tertiary-container/20 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined">military_tech</span>
+</span>
+<span class="font-semibold">Weekly Challenge</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
+</button>
+</div>
+<!-- Recent Activity -->
+<div class="bg-surface-container-low p-6 rounded-xl">
+<h5 class="text-sm font-label uppercase tracking-widest text-on-surface-variant mb-6">Recent Activity</h5>
+<div class="flex gap-4">
+<div class="relative">
+<img class="w-12 h-12 rounded-full object-cover" data-alt="Portrait of a person with a warm smile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGrE2JHh1YoHLdKixpoSyK4EgdVjkPgT8BOh7vviIqyzPivhySOLexKNnL4j2K5p5n7w8YDJ0Lt2zry5PypOiGSLvIcxvQmuWWeEHFAvpD7vcpJ0h3WRC5MOORjurVLGKxx8WB21mCL5_g-oNFq1TxHzXb48XWroLDHEGbgKDAiRjhUOlyigmICVmplN3IP0bShRkA167p6ZTkUTji2GGv3hJwktA4rwUY66cF1QfZkUztkbISiX4hslGqaR-ETr8z7HSHSBZpxEys"/>
+<span class="absolute -bottom-1 -right-1 w-5 h-5 bg-primary rounded-full border-2 border-surface-container-low flex items-center justify-center">
+<span class="material-symbols-outlined text-[10px] text-white" style="font-variation-settings: 'FILL' 1;">done_all</span>
+</span>
+</div>
+<div class="flex-1">
+<p class="text-sm text-on-surface leading-snug mb-3">
+<span class="font-bold">Jordan</span> finished the <span class="font-bold text-primary">'Space' module</span>
+</p>
+<button class="text-xs font-semibold text-primary underline underline-offset-4 decoration-2 hover:opacity-70 transition-opacity">Unlock shared results</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation (Mobile Only) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-6 pb-8 pt-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl lg:hidden rounded-t-[3rem] shadow-[0_-8px_30px_rgba(0,0,0,0.04)] border-t border-[#252f41]/5">
+<a class="flex flex-col items-center justify-center bg-[#b6a4fd]/10 text-[#5f4fa0] dark:text-[#b6a4fd] rounded-full p-3 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-inter text-[10px] font-semibold uppercase tracking-widest mt-1">Inicio</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#252f41]/40 dark:text-slate-500 hover:bg-slate-50 transition-colors p-3" href="#">
+<span class="material-symbols-outlined">explore</span>
+<span class="font-inter text-[10px] font-semibold uppercase tracking-widest mt-1">Descubrir</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#252f41]/40 dark:text-slate-500 hover:bg-slate-50 transition-colors p-3" href="#">
+<span class="material-symbols-outlined">groups</span>
+<span class="font-inter text-[10px] font-semibold uppercase tracking-widest mt-1">Nosotros</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#252f41]/40 dark:text-slate-500 hover:bg-slate-50 transition-colors p-3" href="#">
+<span class="material-symbols-outlined">auto_awesome</span>
+<span class="font-inter text-[10px] font-semibold uppercase tracking-widest mt-1">Retos</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#252f41]/40 dark:text-slate-500 hover:bg-slate-50 transition-colors p-3" href="#">
+<span class="material-symbols-outlined">account_circle</span>
+<span class="font-inter text-[10px] font-semibold uppercase tracking-widest mt-1">Perfil</span>
+</a>
+</nav>
+</body></html>

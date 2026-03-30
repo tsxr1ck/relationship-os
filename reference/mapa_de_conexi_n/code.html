@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Detailed Connection Map | Relational Sanctuary</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-dim": "#c5d5f7",
+              "on-background": "#252f41",
+              "secondary-fixed": "#bfd1ff",
+              "primary-fixed": "#b6a4fd",
+              "on-error-container": "#510017",
+              "surface-container-low": "#ecf0ff",
+              "on-primary": "#f6f0ff",
+              "on-primary-fixed": "#1a0057",
+              "on-tertiary-fixed-variant": "#6e422c",
+              "outline": "#6d778c",
+              "on-secondary-container": "#054496",
+              "on-tertiary-fixed": "#4c2613",
+              "surface-container-high": "#d6e3ff",
+              "surface": "#f5f6ff",
+              "primary-dim": "#534293",
+              "on-secondary": "#f0f2ff",
+              "tertiary-fixed-dim": "#eeb095",
+              "secondary-dim": "#174d9f",
+              "tertiary-container": "#febea2",
+              "inverse-surface": "#040e1f",
+              "primary-container": "#b6a4fd",
+              "secondary-container": "#bfd1ff",
+              "inverse-on-surface": "#939db3",
+              "secondary-fixed-dim": "#aac3ff",
+              "outline-variant": "#a3adc4",
+              "on-error": "#ffefef",
+              "background": "#f5f6ff",
+              "error": "#b41340",
+              "error-dim": "#a70138",
+              "error-container": "#f74b6d",
+              "surface-container-highest": "#ceddfe",
+              "inverse-primary": "#b6a4fd",
+              "on-primary-container": "#342172",
+              "surface-bright": "#f5f6ff",
+              "on-surface": "#252f41",
+              "on-secondary-fixed": "#003172",
+              "tertiary-fixed": "#febea2",
+              "on-surface-variant": "#525c70",
+              "surface-container": "#dfe8ff",
+              "tertiary": "#7f503a",
+              "surface-container-lowest": "#ffffff",
+              "surface-variant": "#ceddfe",
+              "on-tertiary-container": "#643924",
+              "primary": "#5f4fa0",
+              "tertiary-dim": "#72442f",
+              "surface-tint": "#5f4fa0",
+              "primary-fixed-dim": "#a897ee",
+              "on-primary-fixed-variant": "#3d2b7b",
+              "on-secondary-fixed-variant": "#194ea0",
+              "on-tertiary": "#fff0ea",
+              "secondary": "#2959ab"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Manrope"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .glass-card {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(20px);
+      }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface antialiased pb-32 lg:pb-0 lg:pl-72">
+<!-- Top Navigation Anchor -->
+<header class="fixed top-0 right-0 left-0 lg:left-72 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-[0_12px_40px_rgba(37,47,65,0.06)] h-20 flex justify-between items-center px-8 max-w-screen-2xl mx-auto">
+<div class="flex items-center gap-4">
+<span class="text-xl font-semibold tracking-tight text-[#252f41] dark:text-slate-100 font-headline">Relational Sanctuary</span>
+</div>
+<div class="flex items-center gap-6">
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-[#f5f6ff] transition-colors p-2 rounded-full">favorite</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-[#f5f6ff] transition-colors p-2 rounded-full">notifications</button>
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-container">
+<img alt="User profile" class="w-full h-full object-cover" data-alt="close-up portrait of a young woman with a warm smile in soft natural outdoor lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDyty8Smsp-I0qzoHqvGoszlVBdDzRcb_k7uQHtv6v4miWgh2QRAGfteI7PsLTb6nZeoJiKAUTkma432JyCTyUDcvQDdPq7WB22vJT2LfapusQlS8wtuDP4r_LJzok1DsaS9ZPUE8mHIEgvENhDHdayj3nM2uttdY9CGXB_sD1-iLWX6jv4rqIi9jipIkax2nxn2vLyLVHP0AhPCv_0xYOR5Jp30rCqaaJh0_I-KwQy439et6quU2VzJKoem9j1BCOtbapyhMs8IfGY"/>
+</div>
+</div>
+</header>
+<!-- Side Navigation Anchor (Desktop Only) -->
+<aside class="h-screen w-72 fixed left-0 top-0 hidden lg:flex flex-col bg-[#f5f6ff] p-6 gap-4 z-40 bg-gradient-to-r from-transparent to-[#252f41]/5">
+<div class="mb-8 px-2">
+<h1 class="text-lg font-bold text-[#252f41] font-headline">Relational Sanctuary</h1>
+<p class="text-xs text-on-surface-variant opacity-70">Together for 2 years</p>
+</div>
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-3 p-4 text-[#252f41]/70 hover:translate-x-1 transition-transform duration-300 font-medium" href="#">
+<span class="material-symbols-outlined">home</span> Inicio
+            </a>
+<a class="flex items-center gap-3 p-4 bg-white text-[#5f4fa0] rounded-2xl shadow-sm transition-transform duration-300 font-medium" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">explore</span> Descubrir
+            </a>
+<a class="flex items-center gap-3 p-4 text-[#252f41]/70 hover:translate-x-1 transition-transform duration-300 font-medium" href="#">
+<span class="material-symbols-outlined">group</span> Nosotros
+            </a>
+<a class="flex items-center gap-3 p-4 text-[#252f41]/70 hover:translate-x-1 transition-transform duration-300 font-medium" href="#">
+<span class="material-symbols-outlined">emoji_events</span> Retos
+            </a>
+<a class="flex items-center gap-3 p-4 text-[#252f41]/70 hover:translate-x-1 transition-transform duration-300 font-medium" href="#">
+<span class="material-symbols-outlined">person</span> Perfil
+            </a>
+</nav>
+<div class="mt-auto p-4 bg-primary-container/20 rounded-xl">
+<button class="w-full py-3 bg-gradient-to-r from-primary to-primary-container text-white rounded-xl font-semibold shadow-lg shadow-primary/20 transition-all active:scale-95">Start Session</button>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="pt-32 px-6 lg:px-12 max-w-6xl mx-auto">
+<!-- Comfort Header -->
+<section class="mb-16">
+<span class="inline-flex px-4 py-1.5 rounded-full bg-primary-container/10 text-primary text-xs font-label tracking-widest uppercase mb-6">Detailed Connection Map</span>
+<h2 class="text-5xl lg:text-7xl font-headline font-semibold text-on-surface mb-8 tracking-tight leading-none">Map of Us</h2>
+<!-- Narrative Summary Card -->
+<div class="bg-surface-container-lowest p-8 lg:p-12 rounded-xl border-l-8 border-primary shadow-[0_12px_40px_rgba(37,47,65,0.06)] max-w-3xl">
+<p class="text-2xl lg:text-3xl text-on-surface font-medium leading-tight">
+                    "Your relationship is a <span class="text-primary">Warm-Explorer</span> dynamic. High in connection, but requires focus on conflict repair."
+                </p>
+</div>
+</section>
+<!-- Layer Deep Dives (Bento Grid Style) -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+<!-- Conexión -->
+<div class="bg-surface-container-lowest p-8 rounded-lg shadow-sm hover:shadow-md transition-all flex flex-col gap-6">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-2xl font-headline font-semibold">Conexión</h3>
+<span class="text-sm font-label text-on-tertiary-fixed-variant bg-tertiary-fixed/30 px-3 py-1 rounded-full">Muy alineados</span>
+</div>
+<span class="material-symbols-outlined text-primary text-4xl" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</div>
+<p class="text-on-surface-variant text-lg leading-relaxed">You both value action as love, but express it differently. This creates a strong foundation of shared effort.</p>
+<div class="mt-auto pt-4">
+<div class="w-full h-2 bg-surface-container-low rounded-full overflow-hidden">
+<div class="w-[92%] h-full bg-primary rounded-full"></div>
+</div>
+<span class="text-xs font-label text-outline mt-2 block">92% Alignment</span>
+</div>
+</div>
+<!-- Cuidado -->
+<div class="bg-surface-container-lowest p-8 rounded-lg shadow-sm hover:shadow-md transition-all flex flex-col gap-6">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-2xl font-headline font-semibold">Cuidado</h3>
+<span class="text-sm font-label text-on-secondary-container bg-secondary-container/30 px-3 py-1 rounded-full">Complementarios</span>
+</div>
+<span class="material-symbols-outlined text-secondary text-4xl" style="font-variation-settings: 'FILL' 1;">spa</span>
+</div>
+<p class="text-on-surface-variant text-lg leading-relaxed">One partner provides stability while the other offers emotional depth. A beautiful balance of care.</p>
+<div class="mt-auto pt-4">
+<div class="w-full h-2 bg-surface-container-low rounded-full overflow-hidden">
+<div class="w-[78%] h-full bg-secondary rounded-full"></div>
+</div>
+<span class="text-xs font-label text-outline mt-2 block">78% Alignment</span>
+</div>
+</div>
+<!-- Choque -->
+<div class="bg-surface-container-lowest p-8 rounded-lg shadow-sm hover:shadow-md transition-all flex flex-col gap-6 border-2 border-error/5">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-2xl font-headline font-semibold">Choque</h3>
+<span class="text-sm font-label text-on-error-container bg-error-container/20 px-3 py-1 rounded-full">Zona a trabajar</span>
+</div>
+<span class="material-symbols-outlined text-error text-4xl">flash_on</span>
+</div>
+<p class="text-on-surface-variant text-lg leading-relaxed">Tension arises in moments of stress where communication styles shift from open to defensive.</p>
+<div class="mt-auto pt-4">
+<div class="w-full h-2 bg-surface-container-low rounded-full overflow-hidden">
+<div class="w-[45%] h-full bg-error rounded-full"></div>
+</div>
+<span class="text-xs font-label text-outline mt-2 block">45% Alignment</span>
+</div>
+</div>
+<!-- Camino -->
+<div class="bg-surface-container-lowest p-8 rounded-lg shadow-sm hover:shadow-md transition-all flex flex-col gap-6">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-2xl font-headline font-semibold">Camino</h3>
+<span class="text-sm font-label text-on-tertiary-fixed-variant bg-tertiary-fixed/30 px-3 py-1 rounded-full">Muy alineados</span>
+</div>
+<span class="material-symbols-outlined text-tertiary text-4xl">trending_up</span>
+</div>
+<p class="text-on-surface-variant text-lg leading-relaxed">Your long-term goals and visions for the future are perfectly synchronized. You are walking together.</p>
+<div class="mt-auto pt-4">
+<div class="w-full h-2 bg-surface-container-low rounded-full overflow-hidden">
+<div class="w-[88%] h-full bg-tertiary rounded-full"></div>
+</div>
+<span class="text-xs font-label text-outline mt-2 block">88% Alignment</span>
+</div>
+</div>
+</div>
+<!-- Contrasts & Frictions Section -->
+<section class="mb-16">
+<h3 class="text-3xl font-headline font-semibold mb-8">Contrasts &amp; Frictions</h3>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<div class="lg:col-span-2 bg-secondary-container/10 p-8 rounded-xl border border-secondary-container/20">
+<div class="flex items-center gap-4 mb-6">
+<div class="w-12 h-12 bg-secondary-container rounded-full flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined">contrast</span>
+</div>
+<h4 class="text-xl font-bold">Identified Difference</h4>
+</div>
+<div class="flex flex-col md:flex-row items-center gap-8 py-4">
+<div class="flex-1 text-center">
+<div class="text-3xl font-headline font-bold text-primary mb-2">Need for Space</div>
+<p class="text-sm text-on-surface-variant">Values solitude to recharge energy after long social interaction.</p>
+</div>
+<div class="flex items-center justify-center">
+<span class="material-symbols-outlined text-outline-variant text-4xl">sync_alt</span>
+</div>
+<div class="flex-1 text-center">
+<div class="text-3xl font-headline font-bold text-secondary mb-2">Closeness</div>
+<p class="text-sm text-on-surface-variant">Seeks constant proximity and shared activities as primary bonding.</p>
+</div>
+</div>
+</div>
+<div class="bg-surface-container p-8 rounded-xl flex flex-col justify-center items-center text-center">
+<span class="material-symbols-outlined text-5xl text-primary mb-4">lightbulb</span>
+<h5 class="font-bold mb-2">Integration Tip</h5>
+<p class="text-on-surface-variant italic">"Schedule 'Quiet Connection' hours—being in the same room doing different tasks."</p>
+</div>
+</div>
+</section>
+<!-- Recommendations Section -->
+<section class="mb-24">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+<div>
+<h3 class="text-3xl font-headline font-semibold">Next Steps</h3>
+<p class="text-on-surface-variant mt-2">Actionable items to strengthen your sanctuary.</p>
+</div>
+<div class="flex flex-wrap gap-3">
+<span class="px-5 py-2 rounded-full bg-primary/10 text-primary font-label text-sm font-semibold border border-primary/20">Recommended Conversation</span>
+<span class="px-5 py-2 rounded-full bg-tertiary/10 text-tertiary font-label text-sm font-semibold border border-tertiary/20">Actionable Ritual</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="flex items-start gap-6 p-6 bg-surface-container-low rounded-lg hover:translate-y-[-4px] transition-transform">
+<div class="w-16 h-16 shrink-0 rounded-2xl bg-white flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-primary text-3xl">chat_bubble</span>
+</div>
+<div>
+<h4 class="text-lg font-bold mb-1">The "Repair" Dialogue</h4>
+<p class="text-on-surface-variant text-sm leading-relaxed mb-4">A guided 15-minute talk focused on softening startup during conflict.</p>
+<button class="text-primary font-bold text-sm flex items-center gap-1 group">Start Now <span class="material-symbols-outlined text-lg group-hover:translate-x-1 transition-transform">arrow_forward</span></button>
+</div>
+</div>
+<div class="flex items-start gap-6 p-6 bg-surface-container-low rounded-lg hover:translate-y-[-4px] transition-transform">
+<div class="w-16 h-16 shrink-0 rounded-2xl bg-white flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-tertiary text-3xl">calendar_today</span>
+</div>
+<div>
+<h4 class="text-lg font-bold mb-1">Sunday Sanctuary Reset</h4>
+<p class="text-on-surface-variant text-sm leading-relaxed mb-4">A ritual of 10 minutes to plan the week's quality time together.</p>
+<button class="text-tertiary font-bold text-sm flex items-center gap-1 group">Add to Calendar <span class="material-symbols-outlined text-lg group-hover:translate-x-1 transition-transform">arrow_forward</span></button>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Anchor (Mobile Only) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-6 pb-8 pt-4 bg-white/80 backdrop-blur-2xl lg:hidden rounded-t-[3rem] shadow-[0_-8px_30px_rgba(0,0,0,0.04)] border-t border-[#252f41]/5">
+<a class="flex flex-col items-center justify-center text-[#252f41]/40" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-inter text-[10px] font-semibold uppercase tracking-widest mt-1">Inicio</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-[#b6a4fd]/10 text-[#5f4fa0] rounded-full p-3 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">explore</span>
+<span class="font-inter text-[10px] font-semibold uppercase tracking-widest mt-1">Descubrir</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#252f41]/40" href="#">
+<span class="material-symbols-outlined">groups</span>
+<span class="font-inter text-[10px] font-semibold uppercase tracking-widest mt-1">Nosotros</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#252f41]/40" href="#">
+<span class="material-symbols-outlined">auto_awesome</span>
+<span class="font-inter text-[10px] font-semibold uppercase tracking-widest mt-1">Retos</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#252f41]/40" href="#">
+<span class="material-symbols-outlined">account_circle</span>
+<span class="font-inter text-[10px] font-semibold uppercase tracking-widest mt-1">Perfil</span>
+</a>
+</nav>
+</body></html>

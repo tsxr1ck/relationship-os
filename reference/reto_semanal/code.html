@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Weekly Challenge - Relational Sanctuary</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-dim": "#c5d5f7",
+              "on-background": "#252f41",
+              "secondary-fixed": "#bfd1ff",
+              "primary-fixed": "#b6a4fd",
+              "on-error-container": "#510017",
+              "surface-container-low": "#ecf0ff",
+              "on-primary": "#f6f0ff",
+              "on-primary-fixed": "#1a0057",
+              "on-tertiary-fixed-variant": "#6e422c",
+              "outline": "#6d778c",
+              "on-secondary-container": "#054496",
+              "on-tertiary-fixed": "#4c2613",
+              "surface-container-high": "#d6e3ff",
+              "surface": "#f5f6ff",
+              "primary-dim": "#534293",
+              "on-secondary": "#f0f2ff",
+              "tertiary-fixed-dim": "#eeb095",
+              "secondary-dim": "#174d9f",
+              "tertiary-container": "#febea2",
+              "inverse-surface": "#040e1f",
+              "primary-container": "#b6a4fd",
+              "secondary-container": "#bfd1ff",
+              "inverse-on-surface": "#939db3",
+              "secondary-fixed-dim": "#aac3ff",
+              "outline-variant": "#a3adc4",
+              "on-error": "#ffefef",
+              "background": "#f5f6ff",
+              "error": "#b41340",
+              "error-dim": "#a70138",
+              "error-container": "#f74b6d",
+              "surface-container-highest": "#ceddfe",
+              "inverse-primary": "#b6a4fd",
+              "on-primary-container": "#342172",
+              "surface-bright": "#f5f6ff",
+              "on-surface": "#252f41",
+              "on-secondary-fixed": "#003172",
+              "tertiary-fixed": "#febea2",
+              "on-surface-variant": "#525c70",
+              "surface-container": "#dfe8ff",
+              "tertiary": "#7f503a",
+              "surface-container-lowest": "#ffffff",
+              "surface-variant": "#ceddfe",
+              "on-tertiary-container": "#643924",
+              "primary": "#5f4fa0",
+              "tertiary-dim": "#72442f",
+              "surface-tint": "#5f4fa0",
+              "primary-fixed-dim": "#a897ee",
+              "on-primary-fixed-variant": "#3d2b7b",
+              "on-secondary-fixed-variant": "#194ea0",
+              "on-tertiary": "#fff0ea",
+              "secondary": "#2959ab"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Manrope"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      body {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary-container">
+<!-- Top Navigation Shell -->
+<nav class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl text-[#252f41] dark:text-slate-100 fixed top-0 w-full z-50 shadow-[0_12px_40px_rgba(37,47,65,0.06)]">
+<div class="flex justify-between items-center px-8 h-20 max-w-screen-2xl mx-auto font-manrope antialiased">
+<span class="text-xl font-semibold tracking-tight text-[#252f41] dark:text-slate-100">Relational Sanctuary</span>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-[#252f41]/60 dark:text-slate-400 hover:text-[#5f4fa0] transition-colors font-medium" href="#">Inicio</a>
+<a class="text-[#252f41]/60 dark:text-slate-400 hover:text-[#5f4fa0] transition-colors font-medium" href="#">Descubrir</a>
+<a class="text-[#252f41]/60 dark:text-slate-400 hover:text-[#5f4fa0] transition-colors font-medium" href="#">Nosotros</a>
+<a class="text-[#5f4fa0] dark:text-[#b6a4fd] font-medium transition-colors" href="#">Retos</a>
+<a class="text-[#252f41]/60 dark:text-slate-400 hover:text-[#5f4fa0] transition-colors font-medium" href="#">Perfil</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-full hover:bg-[#f5f6ff] transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+</button>
+<button class="p-2 rounded-full hover:bg-[#f5f6ff] transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">favorite</span>
+</button>
+<img alt="User profile" class="w-10 h-10 rounded-full object-cover ring-2 ring-primary/20" data-alt="Close up portrait of a smiling person in warm natural lighting with a soft bokeh park background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBnNqPha-I9U1wD8ojov6XtVuf-nbgun1mF7RPul1tR6d-P_hK-_bveNEszX-85yA5qSKSZc-CWuIDYooxNoOP1J5lTe9AyeBoEjFvlFEimZuCKCfjGAxDptVcnh951JxQSkEnk1c-hXR6X5RecjJnHhf3TAK_vTvMTpb8l96n07_wrk4cSit8sfRTK15t3GsnPuIPxgGL2hZ0Lh5JkMq6gL7yd5TxQU-N7E1sS3A1ENUl0v8FkLy4eUVd2H1FORi5ZRHE77DRFDg62"/>
+</div>
+</div>
+</nav>
+<!-- Side Navigation Shell (Web) -->
+<aside class="h-screen w-72 fixed left-0 top-0 hidden lg:flex flex-col p-6 gap-4 bg-[#f5f6ff] dark:bg-slate-950 bg-gradient-to-r from-transparent to-[#252f41]/5 font-manrope text-sm font-medium z-40 pt-24">
+<div class="mb-8 px-4">
+<h2 class="text-lg font-bold text-[#252f41] dark:text-white">Relational Sanctuary</h2>
+<p class="text-on-surface-variant opacity-70">Together for 2 years</p>
+</div>
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-4 p-4 text-[#252f41]/70 dark:text-slate-400 hover:text-[#5f4fa0] hover:translate-x-1 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">home</span> Inicio
+            </a>
+<a class="flex items-center gap-4 p-4 text-[#252f41]/70 dark:text-slate-400 hover:text-[#5f4fa0] hover:translate-x-1 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">explore</span> Descubrir
+            </a>
+<a class="flex items-center gap-4 p-4 text-[#252f41]/70 dark:text-slate-400 hover:text-[#5f4fa0] hover:translate-x-1 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">group</span> Nosotros
+            </a>
+<a class="flex items-center gap-4 p-4 bg-white dark:bg-slate-800 text-[#5f4fa0] dark:text-[#b6a4fd] rounded-2xl shadow-sm hover:translate-x-1 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">emoji_events</span> Retos
+            </a>
+<a class="flex items-center gap-4 p-4 text-[#252f41]/70 dark:text-slate-400 hover:text-[#5f4fa0] hover:translate-x-1 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">person</span> Perfil
+            </a>
+</nav>
+<div class="mt-auto p-4">
+<button class="w-full py-4 bg-primary text-white rounded-xl font-semibold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all">
+                Start Session
+            </button>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="min-h-screen pt-28 pb-32 px-6 lg:ml-72 max-w-7xl mx-auto">
+<!-- Editorial Header -->
+<header class="mb-12 lg:mb-20 pt-8">
+<div class="inline-flex items-center gap-2 px-4 py-1.5 bg-tertiary-container/20 text-tertiary rounded-full mb-6">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<span class="text-[10px] font-label font-bold uppercase tracking-widest">Ritual Semanal</span>
+</div>
+<h1 class="text-5xl lg:text-7xl font-headline font-semibold text-on-surface tracking-tight leading-[1.1] max-w-3xl">
+                Challenge of the Week: <br/>
+<span class="text-primary italic">The 10-Minute Check-in</span>
+</h1>
+</header>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- Main Content: Steps & Details -->
+<div class="lg:col-span-8 space-y-8">
+<!-- Hero Card Section -->
+<section class="relative overflow-hidden bg-surface-container-lowest rounded-xl p-8 lg:p-12 shadow-[0_12px_40px_rgba(37,47,65,0.04)]">
+<div class="relative z-10">
+<p class="text-xl lg:text-2xl text-on-surface-variant font-body leading-relaxed mb-8">
+                            A ritual to align on the upcoming week and express needs. This simple practice ensures both partners feel seen and supported before the Monday rush begins.
+                        </p>
+<div class="flex flex-wrap gap-4 items-center">
+<div class="flex items-center gap-3 bg-surface-container-low px-6 py-3 rounded-full">
+<span class="material-symbols-outlined text-primary">verified</span>
+<span class="text-sm font-semibold">Reduces Sunday-evening anxiety</span>
+</div>
+<div class="flex items-center gap-3 bg-surface-container-low px-6 py-3 rounded-full">
+<span class="material-symbols-outlined text-primary">schedule</span>
+<span class="text-sm font-semibold">10 Minutes</span>
+</div>
+</div>
+</div>
+<!-- Decorative Background Element -->
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary-container/10 blur-[80px] rounded-full -mr-20 -mt-20"></div>
+</section>
+<!-- Steps List -->
+<section class="space-y-6">
+<h2 class="text-2xl font-headline font-semibold px-2">How to do it</h2>
+<div class="grid gap-4">
+<div class="flex gap-6 p-6 bg-white rounded-xl hover:shadow-md transition-shadow group">
+<div class="flex-shrink-0 w-12 h-12 bg-primary/5 text-primary font-bold text-xl flex items-center justify-center rounded-full border border-primary/10 group-hover:bg-primary group-hover:text-white transition-colors">1</div>
+<div>
+<h3 class="font-bold text-lg mb-1">Find a Quiet Spot</h3>
+<p class="text-on-surface-variant">Choose a comfortable space without digital distractions. Put phones on Do Not Disturb.</p>
+</div>
+</div>
+<div class="flex gap-6 p-6 bg-white rounded-xl hover:shadow-md transition-shadow group">
+<div class="flex-shrink-0 w-12 h-12 bg-primary/5 text-primary font-bold text-xl flex items-center justify-center rounded-full border border-primary/10 group-hover:bg-primary group-hover:text-white transition-colors">2</div>
+<div>
+<h3 class="font-bold text-lg mb-1">Calendar Review</h3>
+<p class="text-on-surface-variant">Briefly look at the next 7 days. Highlight busy evenings or stressful appointments.</p>
+</div>
+</div>
+<div class="flex gap-6 p-6 bg-white rounded-xl hover:shadow-md transition-shadow group">
+<div class="flex-shrink-0 w-12 h-12 bg-primary/5 text-primary font-bold text-xl flex items-center justify-center rounded-full border border-primary/10 group-hover:bg-primary group-hover:text-white transition-colors">3</div>
+<div>
+<h3 class="font-bold text-lg mb-1">Share the One Thing</h3>
+<p class="text-on-surface-variant">Each partner answers: "What is one thing I can do this week to make you feel loved?"</p>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Sidebar: Progress & Actions -->
+<aside class="lg:col-span-4 space-y-8">
+<!-- Progress Tracker Card -->
+<div class="bg-primary text-white rounded-xl p-8 shadow-xl shadow-primary/20">
+<h3 class="text-xl font-bold mb-6">Your Goal</h3>
+<p class="mb-8 opacity-90">Complete 3 times this week</p>
+<div class="flex justify-center mb-8 relative">
+<!-- Progress Circle Mockup -->
+<svg class="w-32 h-32 transform -rotate-90">
+<circle cx="64" cy="64" fill="transparent" r="56" stroke="rgba(255,255,255,0.2)" stroke-width="8"></circle>
+<circle cx="64" cy="64" fill="transparent" r="56" stroke="white" stroke-dasharray="351.8" stroke-dashoffset="117.2" stroke-linecap="round" stroke-width="8"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-3xl font-bold">2/3</span>
+<span class="text-[10px] uppercase font-bold tracking-widest opacity-70">Done</span>
+</div>
+</div>
+<button class="w-full py-4 bg-white text-primary rounded-xl font-bold hover:bg-on-primary transition-colors active:scale-95">
+                        Log Today's Ritual
+                    </button>
+</div>
+<!-- Feedback Section -->
+<div class="bg-surface-container-high rounded-xl p-8">
+<h3 class="text-lg font-bold mb-4">How did this feel?</h3>
+<p class="text-sm text-on-surface-variant mb-6">Your feedback helps us personalize future challenges.</p>
+<div class="grid grid-cols-5 gap-3">
+<button class="aspect-square flex items-center justify-center bg-white rounded-lg hover:bg-primary-container transition-colors group">
+<span class="material-symbols-outlined text-primary group-hover:text-white">sentiment_very_dissatisfied</span>
+</button>
+<button class="aspect-square flex items-center justify-center bg-white rounded-lg hover:bg-primary-container transition-colors group">
+<span class="material-symbols-outlined text-primary group-hover:text-white">sentiment_dissatisfied</span>
+</button>
+<button class="aspect-square flex items-center justify-center bg-white rounded-lg hover:bg-primary-container transition-colors group">
+<span class="material-symbols-outlined text-primary group-hover:text-white">sentiment_neutral</span>
+</button>
+<button class="aspect-square flex items-center justify-center bg-white rounded-lg hover:bg-primary-container transition-colors group">
+<span class="material-symbols-outlined text-primary group-hover:text-white">sentiment_satisfied</span>
+</button>
+<button class="aspect-square flex items-center justify-center bg-white rounded-lg hover:bg-primary-container transition-colors group">
+<span class="material-symbols-outlined text-primary group-hover:text-white">sentiment_very_satisfied</span>
+</button>
+</div>
+</div>
+<!-- Related Content Image -->
+<div class="rounded-xl overflow-hidden aspect-video relative group cursor-pointer shadow-lg">
+<img alt="Couple relaxing" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A peaceful couple sitting together on a soft linen sofa sharing a quiet moment in a sunlit minimal living room" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCA90GmcSk-ImIf_10BUPQUbddl5kCDx25PsVteYjxKoLBQUL979On6gydoFISo6X3wqJnQJUzGJHJuQ8yFKYsE7gwykv8DEEfiX9rGA-hWwUd1Nhv3Sn5D9VeoEpx9SwfQCyqJgUzQOfVo0_SsttBjjjB_GWj4-7FdAFG-kVIcveVfdLCu5S1rS2y4rGhHva1LQWQ3elxZuXf4I8LuHnaJ-CatNXaDvRkR6PPG88ZQYVHhSNJEfzIGF3d-fDLC2W_8xVRBQD-DqUqQ"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-6">
+<div>
+<span class="text-white/80 text-[10px] uppercase font-bold tracking-widest">Guía Relacionada</span>
+<p class="text-white font-bold">Deepening Daily Intimacy</p>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<!-- Bottom Navigation Shell (Mobile) -->
+<nav class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl fixed bottom-0 w-full rounded-t-[3rem] lg:hidden z-50 shadow-[0_-8px_30px_rgba(0,0,0,0.04)] border-t border-[#252f41]/5 px-6 pb-8 pt-4 flex justify-around items-center">
+<a class="flex flex-col items-center justify-center text-[#252f41]/40 dark:text-slate-500 font-inter text-[10px] font-semibold uppercase tracking-widest hover:bg-slate-50 transition-all" href="#">
+<span class="material-symbols-outlined mb-1">home</span>
+            Inicio
+        </a>
+<a class="flex flex-col items-center justify-center text-[#252f41]/40 dark:text-slate-500 font-inter text-[10px] font-semibold uppercase tracking-widest hover:bg-slate-50 transition-all" href="#">
+<span class="material-symbols-outlined mb-1">explore</span>
+            Descubrir
+        </a>
+<a class="flex flex-col items-center justify-center text-[#252f41]/40 dark:text-slate-500 font-inter text-[10px] font-semibold uppercase tracking-widest hover:bg-slate-50 transition-all" href="#">
+<span class="material-symbols-outlined mb-1">groups</span>
+            Nosotros
+        </a>
+<a class="flex flex-col items-center justify-center bg-[#b6a4fd]/10 text-[#5f4fa0] dark:text-[#b6a4fd] rounded-full p-3 font-inter text-[10px] font-semibold uppercase tracking-widest scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+            Retos
+        </a>
+<a class="flex flex-col items-center justify-center text-[#252f41]/40 dark:text-slate-500 font-inter text-[10px] font-semibold uppercase tracking-widest hover:bg-slate-50 transition-all" href="#">
+<span class="material-symbols-outlined mb-1">account_circle</span>
+            Perfil
+        </a>
+</nav>
+</body></html>

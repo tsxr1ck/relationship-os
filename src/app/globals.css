@@ -1,26 +1,187 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* === FOUNDATION === */
+  --color-base:        #0D0B0F;
+  --color-surface-1:   #15121A;
+  --color-surface-2:   #1E1A26;
+  --color-surface-3:   #272230;
+  --color-border:      #2D2838;
+  --color-border-glow: #3D3550;
+
+  /* === TEXT === */
+  --color-text-primary:   #F2EEF7;
+  --color-text-secondary: #9B93AA;
+  --color-text-tertiary:  #6B6178;
+
+  /* === 4C DIMENSION COLORS === */
+  --color-conexion:      #E8748A;
+  --color-conexion-dim:  #2D1820;
+  --color-conexion-glow: rgba(232, 116, 138, 0.15);
+
+  --color-cuidado:       #F2A65A;
+  --color-cuidado-dim:   #2A1D0E;
+  --color-cuidado-glow:  rgba(242, 166, 90, 0.15);
+
+  --color-choque:        #5EC4B6;
+  --color-choque-dim:    #0E2320;
+  --color-choque-glow:   rgba(94, 196, 182, 0.15);
+
+  --color-camino:        #C9A84C;
+  --color-camino-dim:    #231C07;
+  --color-camino-glow:   rgba(201, 168, 76, 0.15);
+
+  /* === AI ACCENT === */
+  --color-ai:            #8B9FE8;
+  --color-ai-dim:        #131627;
+  --color-ai-glow:       rgba(139, 159, 232, 0.12);
+
+  /* === SEMANTIC === */
+  --color-success:  #4ADE80;
+  --color-warning:  #FBBF24;
+  --color-danger:   #F87171;
+
+  /* === SPACING === */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
 }
 
+/* === Tailwind V4 Theme Mappings === */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-base: var(--color-base);
+  --color-surface-1: var(--color-surface-1);
+  --color-surface-2: var(--color-surface-2);
+  --color-surface-3: var(--color-surface-3);
+  --color-border-default: var(--color-border);
+  --color-border-glow: var(--color-border-glow);
+  --color-text-primary: var(--color-text-primary);
+  --color-text-secondary: var(--color-text-secondary);
+  --color-text-tertiary: var(--color-text-tertiary);
+  --color-conexion: var(--color-conexion);
+  --color-conexion-dim: var(--color-conexion-dim);
+  --color-cuidado: var(--color-cuidado);
+  --color-cuidado-dim: var(--color-cuidado-dim);
+  --color-choque: var(--color-choque);
+  --color-choque-dim: var(--color-choque-dim);
+  --color-camino: var(--color-camino);
+  --color-camino-dim: var(--color-camino-dim);
+  --color-ai: var(--color-ai);
+  --color-ai-dim: var(--color-ai-dim);
+  --color-success: var(--color-success);
+  --color-warning: var(--color-warning);
+  --color-danger: var(--color-danger);
+
+  /* Font families */
+  --font-display: var(--font-dm-serif);
+  --font-body: var(--font-inter);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* === Base Styles === */
+* {
+  box-sizing: border-box;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-base);
+  color: var(--color-text-primary);
+  font-family: var(--font-inter), 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-inter), 'Inter', system-ui, sans-serif;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+input, textarea, select, button {
+  font-family: inherit;
+}
+
+/* === Display Typography (DM Serif Display) === */
+.font-display {
+  font-family: var(--font-dm-serif), 'DM Serif Display', serif;
+}
+
+/* === Selection === */
+::selection {
+  background: rgba(139, 159, 232, 0.3);
+  color: var(--color-text-primary);
+}
+
+/* === Scrollbar (Dark) === */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-surface-1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-border-glow);
+}
+
+/* === Utility: Glow Borders === */
+.glow-border-conexion {
+  box-shadow: 0 0 0 1px var(--color-conexion);
+}
+.glow-border-cuidado {
+  box-shadow: 0 0 0 1px var(--color-cuidado);
+}
+.glow-border-choque {
+  box-shadow: 0 0 0 1px var(--color-choque);
+}
+.glow-border-camino {
+  box-shadow: 0 0 0 1px var(--color-camino);
+}
+.glow-border-ai {
+  box-shadow: 0 0 0 1px var(--color-ai);
+}
+
+/* === Utility: AI Pulse === */
+@keyframes ai-pulse {
+  0%, 100% { box-shadow: 0 0 8px var(--color-ai-glow); }
+  50% { box-shadow: 0 0 20px var(--color-ai-glow), 0 0 40px var(--color-ai-glow); }
+}
+
+.animate-ai-pulse {
+  animation: ai-pulse 2.5s ease-in-out infinite;
+}
+
+/* === Utility: Glow Ring === */
+@keyframes glow-ring {
+  0%, 100% { box-shadow: 0 0 12px rgba(232, 116, 138, 0.2), 0 0 24px rgba(232, 116, 138, 0.1); }
+  50% { box-shadow: 0 0 20px rgba(232, 116, 138, 0.4), 0 0 40px rgba(232, 116, 138, 0.2); }
+}
+
+.animate-glow-ring {
+  animation: glow-ring 2.5s ease-in-out infinite;
+}
+
+/* === Utility: Typewriter === */
+@keyframes typewriter-cursor {
+  0%, 100% { border-right-color: var(--color-ai); }
+  50% { border-right-color: transparent; }
+}
+
+/* === Utility: Shimmer === */
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
