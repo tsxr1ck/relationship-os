@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { revalidatePath } from 'next/cache';
+import { logActivityEvent } from '@/app/(dashboard)/dashboard/(protected)/notifications/actions';
 
 const ROUNDS_PER_GAME = 5;
 
@@ -92,6 +93,16 @@ export async function startGameSession(): Promise<{ gameId: string; dilemmas: Si
 
   if (gameError || !game) return { error: 'Error al crear la partida' };
 
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('full_name')
+    .eq('id', user.id)
+    .single();
+
+  await logActivityEvent('sintonia.started', 'sintonia_game', game.id, {
+    partner_name: profile?.full_name || 'Tu pareja',
+  });
+
   return {
     gameId: game.id,
     dilemmas: selected.map(d => ({
@@ -139,6 +150,7 @@ export async function saveRoundResult(
 
 export async function finishGameSession(gameId: string): Promise<{ success: boolean }> {
   const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
   const admin = createAdminClient();
 
   const { data: rounds } = await admin
@@ -163,6 +175,20 @@ export async function finishGameSession(gameId: string): Promise<{ success: bool
   if (error) {
     console.error('Error finishing game:', error);
     return { success: false };
+  }
+
+  if (user) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('full_name')
+      .eq('id', user.id)
+      .single();
+
+    await logActivityEvent('sintonia.completed', 'sintonia_game', gameId, {
+      partner_name: profile?.full_name || 'Tu pareja',
+      matchCount,
+      scorePct,
+    });
   }
 
   revalidatePath('/dashboard/jugar/sintonia');

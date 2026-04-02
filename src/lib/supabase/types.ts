@@ -275,12 +275,18 @@ export type NotificationEventType =
   | 'conocernos.answered'
   | 'conocernos.revealed'
   | 'conocernos.reacted'
+  | 'meconoces.started'
+  | 'meconoces.completed'
+  | 'sintonia.started'
+  | 'sintonia.completed'
+  | 'favoritos.started'
+  | 'favoritos.completed'
+  | 'historia.created'
+  | 'historia.revealed'
   | 'plan.completed'
   | 'plan.created'
   | 'challenge.completed'
   | 'challenge.started'
-  | 'historia.created'
-  | 'historia.revealed'
   | 'profile.updated'
   | 'questionnaire.completed'
   | 'couple.joined'
@@ -293,6 +299,12 @@ export const NOTIFICATION_EVENT_LABELS: Record<NotificationEventType, string> = 
   'conocernos.answered': 'Conocernos - Respuesta del día',
   'conocernos.revealed': 'Conocernos - Revelación de respuestas',
   'conocernos.reacted': 'Conocernos - Reacción a respuesta',
+  'meconoces.started': 'Me Conoces - Ronda iniciada',
+  'meconoces.completed': 'Me Conoces - Ronda completada',
+  'sintonia.started': 'Sintonía - Partida iniciada',
+  'sintonia.completed': 'Sintonía - Partida completada',
+  'favoritos.started': 'Favoritos - Quiz iniciado',
+  'favoritos.completed': 'Favoritos - Quiz completado',
   'plan.completed': 'Plan - Actividad completada',
   'plan.created': 'Plan - Nuevo plan semanal',
   'challenge.completed': 'Reto - Reto completado',

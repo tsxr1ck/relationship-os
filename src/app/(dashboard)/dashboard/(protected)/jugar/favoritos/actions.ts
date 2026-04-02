@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { logActivityEvent } from '@/app/(dashboard)/dashboard/(protected)/notifications/actions';
 
 /* ══════════════════════════════════════
    FAVORITOS (QUIZZES) — Server Actions
@@ -124,6 +125,17 @@ export async function createQuizSession(categoryId: string): Promise<{ success: 
     return { success: false, error: 'Error al iniciar sesión' };
   }
 
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('full_name')
+    .eq('id', user.id)
+    .single();
+
+  await logActivityEvent('favoritos.started', 'favoritos_session', session.id, {
+    partner_name: profile?.full_name || 'Tu pareja',
+    category: categoryId,
+  });
+
   return { success: true, sessionId: session.id };
 }
 
@@ -166,7 +178,7 @@ export async function submitQuizAnswer(
   // 1. Fetch current session state
   const { data: session } = await admin
     .from('favoritos_sessions')
-    .select('answers, couple_id, questions, current_question_index')
+    .select('answers, couple_id, questions, current_question_index, category')
     .eq('id', sessionId)
     .single();
 
@@ -220,6 +232,20 @@ export async function submitQuizAnswer(
   if (error) {
     console.error('Failed submitting answer:', error);
     return { success: false, error: 'Error al enviar respuesta' };
+  }
+
+  // 5. Log completion event
+  if (newStatus === 'completed') {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('full_name')
+      .eq('id', user.id)
+      .single();
+
+    await logActivityEvent('favoritos.completed', 'favoritos_session', sessionId, {
+      partner_name: profile?.full_name || 'Tu pareja',
+      category: session.category,
+    });
   }
 
   return { success: true };

@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { GoogleGenAI } from '@google/genai';
 import { revalidatePath } from 'next/cache';
+import { logActivityEvent } from '@/app/(dashboard)/dashboard/(protected)/notifications/actions';
 
 const QUESTIONS_PER_ROUND = 5;
 const MAX_POINTS_PER_QUESTION = 3;
@@ -143,6 +144,17 @@ export async function startMeConocesRound(): Promise<{ roundId: string } | { err
   if (entriesError) return { error: 'Error al crear las preguntas' };
 
   revalidatePath('/dashboard/jugar/meconoces');
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('full_name')
+    .eq('id', user.id)
+    .single();
+
+  await logActivityEvent('meconoces.started', 'meconoces_round', round.id, {
+    partner_name: profile?.full_name || 'Tu pareja',
+  });
+
   return { roundId: round.id };
 }
 
@@ -173,6 +185,16 @@ export async function submitRoundAnswers(roundId: string, answers: { entryId: st
     .update({ status: 'pending_guesses' })
     .eq('id', roundId);
 
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('full_name')
+    .eq('id', user.id)
+    .single();
+
+  await logActivityEvent('meconoces.answers_submitted', 'meconoces_round', roundId, {
+    partner_name: profile?.full_name || 'Tu pareja',
+  });
+
   revalidatePath('/dashboard/jugar/meconoces');
   return { success: true };
 }
@@ -198,6 +220,8 @@ export async function submitRoundGuesses(roundId: string, guesses: { entryId: st
       .update({ guessed_answer: g.guess })
       .eq('id', g.entryId);
   }
+
+  await scoreRound(roundId);
 
   revalidatePath('/dashboard/jugar/meconoces');
   return { success: true };
@@ -324,6 +348,18 @@ export async function scoreRound(roundId: string): Promise<{ success: boolean; e
   for (const dim of Object.keys(dimScores)) {
     await updateKnowledgeScore(supabase, round.couple_id, dim, round.answerer_id, round.guesser_id, dimScores[dim]);
   }
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('full_name')
+    .eq('id', user.id)
+    .single();
+
+  await logActivityEvent('meconoces.completed', 'meconoces_round', roundId, {
+    partner_name: profile?.full_name || 'Tu pareja',
+    score: totalScore,
+    scorePct,
+  });
 
   revalidatePath('/dashboard/jugar/meconoces');
   return { success: true };

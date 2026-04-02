@@ -185,5 +185,15 @@ export async function saveRevealToHistory(params: {
     return { success: false, error: 'Error al curar en la historia' };
   }
 
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('full_name')
+    .eq('id', user.id)
+    .single();
+
+  await logActivityEvent('historia.revealed', 'conocernos_reveal', params.dailyId, {
+    partner_name: profile?.full_name || 'Tu pareja',
+  });
+
   return { success: true };
 }
