@@ -308,7 +308,7 @@ export default function HoyPage() {
       </div>
 
       {/* Floating Test Button */}
-      <button
+      {/* <button
         onClick={() => {
           try {
             if (typeof window !== 'undefined' && 'Notification' in window) {
@@ -340,7 +340,7 @@ export default function HoyPage() {
         className="fixed bottom-20 right-4 md:bottom-8 md:right-8 z-50 rounded-full px-4 py-2.5 bg-ai text-base shadow-[0px_0px_20px_rgba(216,154,91,0.4)] font-bold cursor-pointer hover:bg-ai/90 border-2 border-base/30"
       >
         🔔 Test Push
-      </button>
+      </button> */}
     </AppShell>
   );
 }

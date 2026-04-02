@@ -40,6 +40,7 @@ export default function NotificationsPage() {
 
   useEffect(() => {
     fetchNotifications();
+    markAllNotificationsAsRead();
   }, []);
 
   const handleMarkAsRead = async (notificationId: string) => {

@@ -34,6 +34,7 @@ export function NotificationDropdown({ onClose, onNotificationAction }: Notifica
 
   useEffect(() => {
     fetchNotifications();
+    markAllNotificationsAsRead();
   }, [fetchNotifications]);
 
   const handleNotificationClick = async (notification: NotificationItem) => {
