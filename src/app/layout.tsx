@@ -1,12 +1,13 @@
 import type { Metadata, Viewport } from "next";
-import { DM_Serif_Display, Inter } from "next/font/google";
+import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/lib/supabase/hooks";
 import { Toaster } from 'sonner';
+import { AppPresenceTracker } from '@/components/notifications/AppPresenceTracker';
 
-const dmSerif = DM_Serif_Display({
-  weight: "400",
-  variable: "--font-dm-serif",
+const playfair = Playfair_Display({
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-playfair",
   subsets: ["latin"],
   display: "swap",
 });
@@ -35,9 +36,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es-MX" className={`dark ${dmSerif.variable} ${inter.variable}`}>
+    <html lang="es-MX" className={`dark ${playfair.variable} ${inter.variable}`}>
       <body className="min-h-screen bg-base text-text-primary antialiased">
         <AuthProvider>
+          <AppPresenceTracker />
           {children}
         </AuthProvider>
         <Toaster position="bottom-center" toastOptions={{

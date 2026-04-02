@@ -5,6 +5,7 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { revalidatePath } from 'next/cache';
 import { QuestionnaireSection, Question } from '@/types/questionnaire';
 import { generateDynamicAssessment } from '@/lib/ai/orchestrator';
+import { logActivityEvent } from '@/app/(dashboard)/dashboard/(protected)/notifications/actions';
 
 /**
  * Get questionnaire sections and questions from database
@@ -332,6 +333,25 @@ export async function completeQuestionnaire(sessionId: string) {
   if (sessionError) {
     console.error('Error completing session:', sessionError);
     throw new Error('Error al completar el cuestionario');
+  }
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('full_name')
+    .eq('id', user.id)
+    .single();
+
+  const { data: membership } = await supabase
+    .from('couple_members')
+    .select('couple_id')
+    .eq('user_id', user.id)
+    .single();
+
+  if (membership) {
+    await logActivityEvent('questionnaire.completed', 'response_session', sessionId, {
+      partner_name: profile?.full_name || 'Tu pareja',
+      assessment_name: 'Evaluación de Pareja',
+    });
   }
 
   revalidatePath('/dashboard');

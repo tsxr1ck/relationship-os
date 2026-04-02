@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { revalidatePath } from 'next/cache';
+import { logActivityEvent } from '@/app/(dashboard)/dashboard/(protected)/notifications/actions';
 
 export async function createCouple() {
   const supabase = await createClient();
@@ -83,6 +84,16 @@ export async function joinCouple(inviteCode: string) {
     }
     throw new Error(memberError.message);
   }
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('full_name')
+    .eq('id', user.id)
+    .single();
+
+  await logActivityEvent('couple.joined', 'couple_member', couple.id, {
+    partner_name: profile?.full_name || 'Tu pareja',
+  });
   
   revalidatePath('/dashboard');
   

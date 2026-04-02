@@ -1,18 +1,23 @@
 @import "tailwindcss";
 
 :root {
+  /* ══════════════════════════════════════════════
+     WARM INTIMATE DARK — Design System V2
+     Espresso base, candlelit surfaces, amber accents
+     ══════════════════════════════════════════════ */
+
   /* === FOUNDATION === */
-  --color-base:        #0D0B0F;
-  --color-surface-1:   #15121A;
-  --color-surface-2:   #1E1A26;
-  --color-surface-3:   #272230;
-  --color-border:      #2D2838;
-  --color-border-glow: #3D3550;
+  --color-base:        #151311;
+  --color-surface-1:   #1d1a18;
+  --color-surface-2:   #26211e;
+  --color-surface-3:   #2d2622;
+  --color-border:      #342e28;
+  --color-border-glow: #4a3f35;
 
   /* === TEXT === */
-  --color-text-primary:   #F2EEF7;
-  --color-text-secondary: #9B93AA;
-  --color-text-tertiary:  #6B6178;
+  --color-text-primary:   #f4ede6;
+  --color-text-secondary: #c7b9ab;
+  --color-text-tertiary:  #9a8d82;
 
   /* === 4C DIMENSION COLORS === */
   --color-conexion:      #E8748A;
@@ -31,15 +36,21 @@
   --color-camino-dim:    #231C07;
   --color-camino-glow:   rgba(201, 168, 76, 0.15);
 
-  /* === AI ACCENT === */
-  --color-ai:            #8B9FE8;
-  --color-ai-dim:        #131627;
-  --color-ai-glow:       rgba(139, 159, 232, 0.12);
+  /* === ACCENT: WARM COPPER (replaces cold AI-blue) === */
+  --color-ai:            #d89a5b;
+  --color-ai-dim:        #251c12;
+  --color-ai-glow:       rgba(216, 154, 91, 0.12);
+
+  /* === WARM ACCENTS === */
+  --color-accent-rose:   #c98c93;
+  --color-accent-soft:   #6e5a52;
+  --color-success-warm:  #7fa36a;
+  --color-memory-tint:   #4e3d44;
 
   /* === SEMANTIC === */
-  --color-success:  #4ADE80;
-  --color-warning:  #FBBF24;
-  --color-danger:   #F87171;
+  --color-success:  #7fa36a;
+  --color-warning:  #d89a5b;
+  --color-danger:   #cf6b6b;
 
   /* === SPACING === */
   --space-1:  4px;
@@ -75,12 +86,16 @@
   --color-camino-dim: var(--color-camino-dim);
   --color-ai: var(--color-ai);
   --color-ai-dim: var(--color-ai-dim);
+  --color-accent-rose: var(--color-accent-rose);
+  --color-accent-soft: var(--color-accent-soft);
+  --color-success-warm: var(--color-success-warm);
+  --color-memory-tint: var(--color-memory-tint);
   --color-success: var(--color-success);
   --color-warning: var(--color-warning);
   --color-danger: var(--color-danger);
 
   /* Font families */
-  --font-display: var(--font-dm-serif);
+  --font-display: var(--font-playfair);
   --font-body: var(--font-inter);
 }
 
@@ -107,21 +122,21 @@ input, textarea, select, button {
   font-family: inherit;
 }
 
-/* === Display Typography (DM Serif Display) === */
+/* === Display Typography (Playfair Display — warm editorial) === */
 .font-display {
-  font-family: var(--font-dm-serif), 'DM Serif Display', serif;
+  font-family: var(--font-playfair), 'Playfair Display', serif;
 }
 
 /* === Selection === */
 ::selection {
-  background: rgba(139, 159, 232, 0.3);
+  background: rgba(216, 154, 91, 0.3);
   color: var(--color-text-primary);
 }
 
-/* === Scrollbar (Dark) === */
+/* === Scrollbar (Warm Dark) === */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
@@ -154,7 +169,84 @@ input, textarea, select, button {
   box-shadow: 0 0 0 1px var(--color-ai);
 }
 
-/* === Utility: AI Pulse === */
+/* ══════════════════════════════════════════════
+   MICRO-ANIMATIONS — Emotional, not flashy
+   ══════════════════════════════════════════════ */
+
+/* Warm ambient pulse for presence signals */
+@keyframes warm-pulse {
+  0%, 100% { box-shadow: 0 0 8px rgba(216, 154, 91, 0.08); }
+  50% { box-shadow: 0 0 20px rgba(216, 154, 91, 0.18), 0 0 40px rgba(216, 154, 91, 0.08); }
+}
+
+.animate-warm-pulse {
+  animation: warm-pulse 3s ease-in-out infinite;
+}
+
+/* Soft glow ring for avatars */
+@keyframes glow-ring {
+  0%, 100% { box-shadow: 0 0 12px rgba(232, 116, 138, 0.15), 0 0 24px rgba(232, 116, 138, 0.06); }
+  50% { box-shadow: 0 0 20px rgba(232, 116, 138, 0.3), 0 0 40px rgba(232, 116, 138, 0.12); }
+}
+
+.animate-glow-ring {
+  animation: glow-ring 3s ease-in-out infinite;
+}
+
+/* Memory card entrance — blur to focus */
+@keyframes memory-rise {
+  0% { opacity: 0; filter: blur(8px); transform: translateY(12px); }
+  100% { opacity: 1; filter: blur(0); transform: translateY(0); }
+}
+
+.animate-memory-rise {
+  animation: memory-rise 0.8s ease-out forwards;
+}
+
+/* Progressive text reveal for AI notes */
+@keyframes text-reveal {
+  0% { opacity: 0; transform: translateY(6px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.animate-text-reveal {
+  animation: text-reveal 0.6s ease-out forwards;
+}
+
+/* Partner presence entry */
+@keyframes presence-fade {
+  0% { opacity: 0; transform: scale(0.97); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.animate-presence-fade {
+  animation: presence-fade 0.5s ease-out forwards;
+}
+
+/* Celebration shimmer */
+@keyframes celebration-shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.animate-celebration {
+  background-size: 200% auto;
+  animation: celebration-shimmer 3s linear infinite;
+}
+
+/* Typewriter cursor */
+@keyframes typewriter-cursor {
+  0%, 100% { border-right-color: var(--color-ai); }
+  50% { border-right-color: transparent; }
+}
+
+/* Generic shimmer */
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* AI pulse — now warm */
 @keyframes ai-pulse {
   0%, 100% { box-shadow: 0 0 8px var(--color-ai-glow); }
   50% { box-shadow: 0 0 20px var(--color-ai-glow), 0 0 40px var(--color-ai-glow); }
@@ -164,24 +256,15 @@ input, textarea, select, button {
   animation: ai-pulse 2.5s ease-in-out infinite;
 }
 
-/* === Utility: Glow Ring === */
-@keyframes glow-ring {
-  0%, 100% { box-shadow: 0 0 12px rgba(232, 116, 138, 0.2), 0 0 24px rgba(232, 116, 138, 0.1); }
-  50% { box-shadow: 0 0 20px rgba(232, 116, 138, 0.4), 0 0 40px rgba(232, 116, 138, 0.2); }
-}
-
-.animate-glow-ring {
-  animation: glow-ring 2.5s ease-in-out infinite;
-}
-
-/* === Utility: Typewriter === */
-@keyframes typewriter-cursor {
-  0%, 100% { border-right-color: var(--color-ai); }
-  50% { border-right-color: transparent; }
-}
-
-/* === Utility: Shimmer === */
-@keyframes shimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
+/* === Reduced Motion Support === */
+@media (prefers-reduced-motion: reduce) {
+  .animate-warm-pulse,
+  .animate-glow-ring,
+  .animate-memory-rise,
+  .animate-text-reveal,
+  .animate-presence-fade,
+  .animate-celebration,
+  .animate-ai-pulse {
+    animation: none !important;
+  }
 }

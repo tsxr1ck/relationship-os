@@ -18,6 +18,7 @@ import {
   type NosotrosData,
   type NosotrosDimension,
 } from './actions';
+import { KnowledgeScoreWidget } from '@/components/meconoces/KnowledgeScoreWidget';
 
 // ─── Animation Variants ───────────────────────────────────────
 
@@ -873,7 +874,12 @@ export default function NosotrosPage() {
           </motion.div>
         )}
 
-        {/* ═══ Section 6: Bottom CTA ═══ */}
+        {/* ═══ Section 6: Knowledge Scores ═══ */}
+        <motion.div variants={itemVariants}>
+          <KnowledgeScoreWidget />
+        </motion.div>
+
+        {/* ═══ Section 7: Bottom CTA ═══ */}
         <motion.div variants={itemVariants}>
           <Card className="overflow-hidden cursor-pointer transition-all hover:scale-[1.01]" style={{ background: 'var(--color-cuidado-dim)', border: '1px solid var(--color-border)' }}>
             <CardContent className="pt-6 pb-6">

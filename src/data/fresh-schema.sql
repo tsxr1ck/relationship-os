@@ -36,6 +36,9 @@ DROP TABLE IF EXISTS dimension_keys CASCADE;
 DROP TABLE IF EXISTS couple_members CASCADE;
 DROP TABLE IF EXISTS couples CASCADE;
 DROP TABLE IF EXISTS profiles CASCADE;
+DROP TABLE IF EXISTS notifications CASCADE;
+DROP TABLE IF EXISTS notification_preferences CASCADE;
+DROP TABLE IF EXISTS activity_events CASCADE;
 
 
 -- ============================================================
@@ -61,6 +64,9 @@ CREATE TABLE couples (
   invite_code TEXT NOT NULL UNIQUE,
   status TEXT DEFAULT 'active' CHECK (status IN ('active', 'archived', 'dissolved')),
   created_by UUID NOT NULL DEFAULT auth.uid() REFERENCES auth.users(id),
+  shared_nickname TEXT,
+  nickname_consent JSONB DEFAULT '{}',
+  timezone TEXT DEFAULT 'America/Mexico_City',
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -430,6 +436,100 @@ CREATE TABLE ai_audit_log (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- ============================================================
+-- 13. NOTIFICATION SYSTEM
+-- ============================================================
+
+CREATE TABLE activity_events (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  couple_id UUID NOT NULL REFERENCES couples(id) ON DELETE CASCADE,
+  actor_id UUID NOT NULL REFERENCES auth.users(id),
+  event_type TEXT NOT NULL,
+  entity_type TEXT,
+  entity_id UUID,
+  metadata JSONB DEFAULT '{}',
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE notifications (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  event_id UUID REFERENCES activity_events(id) ON DELETE SET NULL,
+  title TEXT NOT NULL,
+  body TEXT NOT NULL,
+  icon TEXT DEFAULT 'bell',
+  action_url TEXT,
+  is_read BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE notification_preferences (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  event_type TEXT NOT NULL,
+  enabled BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(user_id, event_type)
+);
+
+-- ============================================================
+-- 14. ME CONOCES — GUESSING GAME
+-- ============================================================
+
+CREATE TABLE meconoces_questions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  question_text TEXT NOT NULL,
+  answer_prompt TEXT NOT NULL,
+  question_type TEXT NOT NULL CHECK (question_type IN ('LIKERT-5','MULTIPLE_CHOICE','SHORT_TEXT','RANK')),
+  dimension TEXT NOT NULL CHECK (dimension IN ('conexion','cuidado','choque','camino','general')),
+  options JSONB,
+  active BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE meconoces_rounds (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  couple_id UUID NOT NULL REFERENCES couples(id) ON DELETE CASCADE,
+  answerer_id UUID NOT NULL REFERENCES auth.users(id),
+  guesser_id UUID NOT NULL REFERENCES auth.users(id),
+  status TEXT DEFAULT 'pending_answers' CHECK (
+    status IN ('pending_answers','pending_guesses','completed')
+  ),
+  score INTEGER,
+  score_pct NUMERIC,
+  dimension_scores JSONB DEFAULT '{}',
+  started_at TIMESTAMPTZ DEFAULT NOW(),
+  completed_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE meconoces_entries (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  round_id UUID NOT NULL REFERENCES meconoces_rounds(id) ON DELETE CASCADE,
+  question_id UUID NOT NULL REFERENCES meconoces_questions(id),
+  sort_order INTEGER NOT NULL,
+  real_answer JSONB,
+  guessed_answer JSONB,
+  points_awarded INTEGER DEFAULT 0,
+  match_level TEXT CHECK (match_level IN ('exact','close','wrong')),
+  ai_judgment TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE meconoces_scores (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  couple_id UUID NOT NULL REFERENCES couples(id) ON DELETE CASCADE,
+  dimension TEXT NOT NULL,
+  about_user_id UUID NOT NULL REFERENCES auth.users(id),
+  guesser_id UUID NOT NULL REFERENCES auth.users(id),
+  knowledge_score NUMERIC NOT NULL DEFAULT 0,
+  rounds_played INTEGER DEFAULT 0,
+  last_played TIMESTAMPTZ,
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(couple_id, dimension, about_user_id, guesser_id)
+);
+
 
 -- ============================================================
 -- ROW LEVEL SECURITY
@@ -465,6 +565,9 @@ ALTER TABLE guided_conversations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE milestones ENABLE ROW LEVEL SECURITY;
 ALTER TABLE ai_insights ENABLE ROW LEVEL SECURITY;
 ALTER TABLE ai_audit_log ENABLE ROW LEVEL SECURITY;
+ALTER TABLE activity_events ENABLE ROW LEVEL SECURITY;
+ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
+ALTER TABLE notification_preferences ENABLE ROW LEVEL SECURITY;
 
 -- ── Profiles: users manage their own ──
 CREATE POLICY "profiles_select" ON profiles FOR SELECT TO authenticated USING (auth.uid() = id);
@@ -564,11 +667,51 @@ CREATE POLICY "milestones_insert" ON milestones FOR INSERT TO authenticated
 CREATE POLICY "ai_insights_select" ON ai_insights FOR SELECT TO authenticated USING (user_id = auth.uid());
 CREATE POLICY "ai_audit_log_select" ON ai_audit_log FOR SELECT TO authenticated USING (TRUE);
 
+-- ── Activity Events: users can see events for their couples ──
+CREATE POLICY "activity_events_select" ON activity_events FOR SELECT TO authenticated
+  USING (couple_id IN (SELECT couple_id FROM couple_members WHERE user_id = auth.uid()));
+
+-- ── Notifications: users can only see their own notifications ──
+CREATE POLICY "notifications_select" ON notifications FOR SELECT TO authenticated
+  USING (user_id = auth.uid());
+CREATE POLICY "notifications_update" ON notifications FOR UPDATE TO authenticated
+  USING (user_id = auth.uid());
+CREATE POLICY "notifications_delete" ON notifications FOR DELETE TO authenticated
+  USING (user_id = auth.uid());
+
+-- ── Notification Preferences: users manage their own preferences ──
+CREATE POLICY "notification_preferences_select" ON notification_preferences FOR SELECT TO authenticated
+  USING (user_id = auth.uid());
+CREATE POLICY "notification_preferences_insert" ON notification_preferences FOR INSERT TO authenticated
+  WITH CHECK (user_id = auth.uid());
+CREATE POLICY "notification_preferences_update" ON notification_preferences FOR UPDATE TO authenticated
+  USING (user_id = auth.uid());
+
 -- ── Generated Assessments: via couple membership ──
 CREATE POLICY "generated_assessments_select" ON generated_assessments FOR SELECT TO authenticated
   USING (couple_id IN (SELECT couple_id FROM couple_members WHERE user_id = auth.uid()));
 CREATE POLICY "generated_assessment_items_select" ON generated_assessment_items FOR SELECT TO authenticated
   USING (EXISTS (SELECT 1 FROM generated_assessments WHERE id = assessment_id AND couple_id IN (SELECT couple_id FROM couple_members WHERE user_id = auth.uid())));
+
+-- ── Me Conoces: via couple membership ──
+CREATE POLICY "meconoces_questions_read" ON meconoces_questions FOR SELECT TO authenticated
+  USING (active = TRUE);
+CREATE POLICY "meconoces_rounds_select" ON meconoces_rounds FOR SELECT TO authenticated
+  USING (couple_id IN (SELECT couple_id FROM couple_members WHERE user_id = auth.uid()));
+CREATE POLICY "meconoces_rounds_insert" ON meconoces_rounds FOR INSERT TO authenticated
+  WITH CHECK (couple_id IN (SELECT couple_id FROM couple_members WHERE user_id = auth.uid()));
+CREATE POLICY "meconoces_rounds_update" ON meconoces_rounds FOR UPDATE TO authenticated
+  USING (couple_id IN (SELECT couple_id FROM couple_members WHERE user_id = auth.uid()));
+CREATE POLICY "meconoces_entries_select" ON meconoces_entries FOR SELECT TO authenticated
+  USING (EXISTS (SELECT 1 FROM meconoces_rounds r JOIN couple_members cm ON cm.couple_id = r.couple_id WHERE r.id = round_id AND cm.user_id = auth.uid()));
+CREATE POLICY "meconoces_entries_insert" ON meconoces_entries FOR INSERT TO authenticated
+  WITH CHECK (EXISTS (SELECT 1 FROM meconoces_rounds r JOIN couple_members cm ON cm.couple_id = r.couple_id WHERE r.id = round_id AND cm.user_id = auth.uid()));
+CREATE POLICY "meconoces_entries_update" ON meconoces_entries FOR UPDATE TO authenticated
+  USING (EXISTS (SELECT 1 FROM meconoces_rounds r JOIN couple_members cm ON cm.couple_id = r.couple_id WHERE r.id = round_id AND cm.user_id = auth.uid()));
+CREATE POLICY "meconoces_scores_select" ON meconoces_scores FOR SELECT TO authenticated
+  USING (couple_id IN (SELECT couple_id FROM couple_members WHERE user_id = auth.uid()));
+CREATE POLICY "meconoces_scores_upsert" ON meconoces_scores FOR ALL TO authenticated
+  USING (couple_id IN (SELECT couple_id FROM couple_members WHERE user_id = auth.uid()));
 
 
 -- ============================================================
@@ -590,11 +733,207 @@ CREATE INDEX idx_weekly_plans_couple ON weekly_plans(couple_id);
 CREATE INDEX idx_weekly_plan_items_plan ON weekly_plan_items(plan_id);
 CREATE INDEX idx_dimension_scores_user ON dimension_scores(user_id);
 CREATE INDEX idx_couple_vectors_couple ON couple_vectors(couple_id);
+CREATE INDEX idx_meconoces_rounds_couple ON meconoces_rounds(couple_id);
+CREATE INDEX idx_meconoces_rounds_status ON meconoces_rounds(couple_id, status);
+CREATE INDEX idx_meconoces_entries_round ON meconoces_entries(round_id);
+CREATE INDEX idx_meconoces_scores_couple ON meconoces_scores(couple_id);
+CREATE INDEX idx_meconoces_scores_pair ON meconoces_scores(couple_id, about_user_id, guesser_id);
+CREATE INDEX idx_meconoces_questions_dimension ON meconoces_questions(dimension, active);
+CREATE INDEX idx_activity_events_couple ON activity_events(couple_id);
+CREATE INDEX idx_activity_events_actor ON activity_events(actor_id);
+CREATE INDEX idx_activity_events_type ON activity_events(event_type);
+CREATE INDEX idx_activity_events_created ON activity_events(created_at DESC);
+CREATE INDEX idx_notifications_user ON notifications(user_id);
+CREATE INDEX idx_notifications_user_read ON notifications(user_id, is_read);
+CREATE INDEX idx_notifications_user_created ON notifications(user_id, created_at DESC);
+CREATE INDEX idx_notifications_event ON notifications(event_id);
+CREATE INDEX idx_notification_preferences_user ON notification_preferences(user_id);
+CREATE INDEX idx_notification_preferences_user_type ON notification_preferences(user_id, event_type);
 
 
 -- ============================================================
 -- SEED: Structural Data
 -- ============================================================
+
+-- ── Notification System: Triggers & Functions ──
+
+CREATE OR REPLACE FUNCTION create_notifications_from_event()
+RETURNS TRIGGER AS $$
+DECLARE
+  partner_id UUID;
+  notif_title TEXT;
+  notif_body TEXT;
+  notif_icon TEXT;
+  notif_action_url TEXT;
+  pref_enabled BOOLEAN;
+BEGIN
+  SELECT cm.user_id INTO partner_id
+  FROM couple_members cm
+  WHERE cm.couple_id = NEW.couple_id
+    AND cm.user_id != NEW.actor_id
+  LIMIT 1;
+
+  IF partner_id IS NULL THEN
+    RETURN NEW;
+  END IF;
+
+  SELECT COALESCE(np.enabled, TRUE) INTO pref_enabled
+  FROM notification_preferences np
+  WHERE np.user_id = partner_id
+    AND np.event_type = NEW.event_type;
+
+  IF pref_enabled = FALSE THEN
+    RETURN NEW;
+  END IF;
+
+  CASE NEW.event_type
+    WHEN 'conocernos.answered' THEN
+      notif_title := 'Tu pareja respondió la pregunta del día';
+      notif_body := COALESCE(NEW.metadata->>'partner_name', 'Tu pareja') || ' ya respondió la pregunta de Conocernos de hoy.';
+      notif_icon := 'heart';
+      notif_action_url := '/dashboard/jugar/conocernos';
+    WHEN 'conocernos.revealed' THEN
+      notif_title := '¡Las respuestas están listas!';
+      notif_body := 'Ya puedes ver las respuestas de hoy en Conocernos.';
+      notif_icon := 'eye';
+      notif_action_url := '/dashboard/jugar/conocernos';
+    WHEN 'conocernos.reacted' THEN
+      notif_title := 'Tu pareja reaccionó a tu respuesta';
+      notif_body := COALESCE(NEW.metadata->>'partner_name', 'Tu pareja') || ' reaccionó a tu respuesta de hoy.';
+      notif_icon := 'smile';
+      notif_action_url := '/dashboard/jugar/conocernos';
+    WHEN 'plan.completed' THEN
+      notif_title := 'Tu pareja completó una actividad';
+      notif_body := COALESCE(NEW.metadata->>'activity_title', 'Una actividad') || ' fue completada en el plan semanal.';
+      notif_icon := 'check-circle';
+      notif_action_url := '/dashboard/plan';
+    WHEN 'plan.created' THEN
+      notif_title := 'Nuevo plan semanal disponible';
+      notif_body := 'Tu pareja generó un nuevo plan semanal para los dos.';
+      notif_icon := 'calendar';
+      notif_action_url := '/dashboard/plan';
+    WHEN 'challenge.completed' THEN
+      notif_title := '¡Reto completado!';
+      notif_body := COALESCE(NEW.metadata->>'challenge_title', 'Un reto') || ' fue completado por tu pareja.';
+      notif_icon := 'trophy';
+      notif_action_url := '/dashboard/retos';
+    WHEN 'challenge.started' THEN
+      notif_title := 'Tu pareja empezó un reto';
+      notif_body := COALESCE(NEW.metadata->>'challenge_title', 'Un reto') || ' comenzó. ¡Únete!';
+      notif_icon := 'zap';
+      notif_action_url := '/dashboard/retos';
+    WHEN 'historia.created' THEN
+      notif_title := 'Nuevo recuerdo compartido';
+      notif_body := COALESCE(NEW.metadata->>'partner_name', 'Tu pareja') || ' agregó un nuevo recuerdo a su historia.';
+      notif_icon := 'book-open';
+      notif_action_url := '/dashboard/jugar/historia';
+    WHEN 'historia.revealed' THEN
+      notif_title := '¡Nuevo recuerdo revelado!';
+      notif_body := 'Un recuerdo fue revelado en su historia compartida.';
+      notif_icon := 'sparkles';
+      notif_action_url := '/dashboard/jugar/historia';
+    WHEN 'profile.updated' THEN
+      notif_title := 'Tu pareja actualizó su perfil';
+      notif_body := COALESCE(NEW.metadata->>'partner_name', 'Tu pareja') || ' hizo cambios en su perfil.';
+      notif_icon := 'user';
+      notif_action_url := '/dashboard/profile';
+    WHEN 'questionnaire.completed' THEN
+      notif_title := 'Evaluación completada';
+      notif_body := COALESCE(NEW.metadata->>'partner_name', 'Tu pareja') || ' completó la evaluación ' || COALESCE(NEW.metadata->>'assessment_name', '') || '.';
+      notif_icon := 'clipboard-check';
+      notif_action_url := '/dashboard/nosotros';
+    WHEN 'couple.joined' THEN
+      notif_title := '¡Tu pareja se unió!';
+      notif_body := COALESCE(NEW.metadata->>'partner_name', 'Alguien') || ' se unió a ustedes como pareja.';
+      notif_icon := 'users';
+      notif_action_url := '/dashboard';
+    WHEN 'milestone.created' THEN
+      notif_title := 'Nuevo hito agregado';
+      notif_body := COALESCE(NEW.metadata->>'partner_name', 'Tu pareja') || ' agregó un nuevo hito: ' || COALESCE(NEW.metadata->>'milestone_title', '') || '.';
+      notif_icon := 'flag';
+      notif_action_url := '/dashboard';
+    WHEN 'nickname.requested' THEN
+      notif_title := 'Solicitud de apodo compartido';
+      notif_body := COALESCE(NEW.metadata->>'partner_name', 'Tu pareja') || ' quiere compartir un apodo contigo.';
+      notif_icon := 'message-circle';
+      notif_action_url := '/dashboard/profile';
+    WHEN 'nickname.accepted' THEN
+      notif_title := '¡Apodo compartido aceptado!';
+      notif_body := COALESCE(NEW.metadata->>'partner_name', 'Tu pareja') || ' aceptó el apodo compartido.';
+      notif_icon := 'heart';
+      notif_action_url := '/dashboard/profile';
+    ELSE
+      notif_title := 'Nueva actividad de tu pareja';
+      notif_body := COALESCE(NEW.metadata->>'partner_name', 'Tu pareja') || ' realizó una actividad en la app.';
+      notif_icon := 'bell';
+      notif_action_url := '/dashboard';
+  END CASE;
+
+  INSERT INTO notifications (user_id, event_id, title, body, icon, action_url)
+  VALUES (partner_id, NEW.id, notif_title, notif_body, notif_icon, notif_action_url);
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE TRIGGER trigger_create_notifications_from_event
+  AFTER INSERT ON activity_events
+  FOR EACH ROW
+  EXECUTE FUNCTION create_notifications_from_event();
+
+CREATE OR REPLACE FUNCTION ensure_default_notification_preferences(user_uuid UUID)
+RETURNS VOID AS $$
+DECLARE
+  event_types TEXT[] := ARRAY[
+    'conocernos.answered', 'conocernos.revealed', 'conocernos.reacted',
+    'plan.completed', 'plan.created',
+    'challenge.completed', 'challenge.started',
+    'historia.created', 'historia.revealed',
+    'profile.updated', 'questionnaire.completed',
+    'couple.joined', 'milestone.created',
+    'nickname.requested', 'nickname.accepted'
+  ];
+  et TEXT;
+BEGIN
+  FOREACH et IN ARRAY event_types LOOP
+    INSERT INTO notification_preferences (user_id, event_type, enabled)
+    VALUES (user_uuid, et, TRUE)
+    ON CONFLICT (user_id, event_type) DO NOTHING;
+  END LOOP;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE OR REPLACE FUNCTION create_default_notification_preferences()
+RETURNS TRIGGER AS $$
+BEGIN
+  PERFORM ensure_default_notification_preferences(NEW.id);
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE TRIGGER trigger_create_notification_prefs
+  AFTER INSERT ON profiles
+  FOR EACH ROW
+  EXECUTE FUNCTION create_default_notification_preferences();
+
+CREATE OR REPLACE FUNCTION log_activity_event(
+  p_couple_id UUID,
+  p_actor_id UUID,
+  p_event_type TEXT,
+  p_entity_type TEXT DEFAULT NULL,
+  p_entity_id UUID DEFAULT NULL,
+  p_metadata JSONB DEFAULT '{}'
+)
+RETURNS UUID AS $$
+DECLARE
+  v_event_id UUID;
+BEGIN
+  INSERT INTO activity_events (couple_id, actor_id, event_type, entity_type, entity_id, metadata)
+  VALUES (p_couple_id, p_actor_id, p_event_type, p_entity_type, p_entity_id, p_metadata)
+  RETURNING id INTO v_event_id;
+  RETURN v_event_id;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- 1. Dimension Keys (V2 framework — 12 dimensions mapped to 4C)
 INSERT INTO dimension_keys (slug, name, description, layer) VALUES

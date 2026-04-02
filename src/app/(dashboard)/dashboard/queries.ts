@@ -2,8 +2,20 @@
 
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { getDailyTip } from './(protected)/profile/actions';
+import { getDashboardInsight } from './actions';
+import { V2_DIMENSION_MAP } from '@/lib/scoring';
 
-export interface DashboardData {
+const AI_TIMEOUT_MS = 3000;
+
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T | null> {
+  return Promise.race([
+    promise,
+    new Promise<null>((_, reject) => setTimeout(() => reject(new Error('timeout')), ms)),
+  ]).catch(() => null);
+}
+
+export interface DashboardCoreData {
   user: {
     id: string;
     email: string;
@@ -20,6 +32,8 @@ export interface DashboardData {
     id: string;
     displayName: string;
     avatarUrl: string | null;
+    lastSeenAt: string | null;
+    isOnline: boolean;
   } | null;
   scores: {
     conexion: number;
@@ -39,11 +53,24 @@ export interface DashboardData {
     totalCount: number;
   } | null;
   weeksActive: number;
+}
+
+export interface DashboardEnrichmentData {
   dailyTip: { tip: string | null; dimension: string | null } | null;
   dashboardInsight: { title: string; body: string } | null;
   activeChallenge: { id: string; title: string; dimension: string } | null;
   upcomingMilestones: any[];
+  conocernos: {
+    dailyId: string;
+    questionText: string;
+    hasAnswered: boolean;
+    partnerHasAnswered: boolean;
+    isRevealed: boolean;
+    revealAt: string;
+  } | null;
 }
+
+export interface DashboardData extends DashboardCoreData, DashboardEnrichmentData {}
 
 function getRelativeDuration(dateStr: string): string {
   const created = new Date(dateStr);
@@ -59,42 +86,33 @@ function getRelativeDuration(dateStr: string): string {
   return months > 0 ? `${years} año${years > 1 ? 's' : ''} y ${months} mes${months > 1 ? 'es' : ''}` : `${years} año${years > 1 ? 's' : ''}`;
 }
 
-import { getDailyTip } from './(protected)/profile/actions';
-import { getDashboardInsight } from './actions';
-import { V2_DIMENSION_MAP } from '@/lib/scoring';
-
-export async function getDashboardData(): Promise<DashboardData> {
+export async function getDashboardCore(): Promise<DashboardCoreData> {
   const supabase = await createClient();
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
+  const admin = createAdminClient();
 
+  // Phase 0: Auth
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
   if (!user || authError) {
     throw new Error('No autenticado');
   }
 
-  const admin = createAdminClient();
+  // Phase 1: Identity queries — parallelized
+  const [profileResult, membershipResult] = await Promise.all([
+    supabase.from('profiles').select('*').eq('id', user.id).single(),
+    supabase.from('couple_members').select('couple_id, role').eq('user_id', user.id).limit(1).single(),
+  ]);
 
-  // Get user profile
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', user.id)
-    .single();
+  const profile = profileResult.data;
+  const membership = membershipResult.data;
 
-  // Get couple membership
-  const { data: membership } = await supabase
-    .from('couple_members')
-    .select('couple_id, role')
-    .eq('user_id', user.id)
-    .limit(1)
-    .single();
-
+  // Phase 2: Couple + Partner resolution
   let couple = null;
   let partner = null;
   let partnerId: string | null = null;
   let partnerQuestionnaireCompleted = false;
+  let partnerVectors: any[] = [];
 
   if (membership) {
-    // Get couple info
     const { data: coupleData } = await supabase
       .from('couples')
       .select('*')
@@ -110,7 +128,6 @@ export async function getDashboardData(): Promise<DashboardData> {
       };
     }
 
-    // Get partner (use admin to bypass RLS — couple_members only shows own rows)
     const { data: members } = await admin
       .from('couple_members')
       .select('user_id')
@@ -119,54 +136,46 @@ export async function getDashboardData(): Promise<DashboardData> {
 
     if (members && members.length > 0) {
       partnerId = members[0].user_id;
-      const { data: partnerProfile } = await admin
-        .from('profiles')
-        .select('id, full_name, avatar_url')
-        .eq('id', partnerId)
-        .single();
+
+      // Parallelize partner profile + vectors
+      const [partnerProfileResult, partnerVectorsResult] = await Promise.all([
+        admin.from('profiles').select('id, full_name, avatar_url, last_seen_at').eq('id', partnerId).single(),
+        admin.from('profile_vectors').select('dimension_slug, normalized_score').eq('user_id', partnerId),
+      ]);
+
+      const partnerProfile = partnerProfileResult.data;
+      partnerVectors = partnerVectorsResult.data || [];
 
       if (partnerProfile) {
+        const lastSeen = partnerProfile.last_seen_at
+          ? new Date(partnerProfile.last_seen_at)
+          : null;
+        const isOnline = lastSeen
+          ? (Date.now() - lastSeen.getTime()) < 5 * 60 * 1000
+          : false;
+
         partner = {
           id: partnerProfile.id,
           displayName: partnerProfile.full_name || 'Tu pareja',
           avatarUrl: partnerProfile.avatar_url,
+          lastSeenAt: partnerProfile.last_seen_at,
+          isOnline,
         };
       }
 
-      // Check partner's questionnaire status (using profile_vectors presence for v2)
-      const { data: pVectors } = await admin
-        .from('profile_vectors')
-        .select('id')
-        .eq('user_id', partnerId)
-        .limit(1);
-
-      partnerQuestionnaireCompleted = !!(pVectors && pVectors.length > 0);
+      partnerQuestionnaireCompleted = partnerVectors.length > 0;
     }
   }
 
-  // Get user's questionnaire status
-  const { data: completedSession } = await supabase
-    .from('response_sessions')
-    .select('*')
-    .eq('user_id', user.id)
-    .eq('status', 'completed')
-    .order('completed_at', { ascending: false })
-    .limit(1)
-    .maybeSingle();
+  // Phase 3: Questionnaire state + user vectors — parallelized
+  const [completedSessionResult, inProgressSessionResult, myVectorsResult] = await Promise.all([
+    supabase.from('response_sessions').select('*').eq('user_id', user.id).eq('status', 'completed').order('completed_at', { ascending: false }).limit(1).maybeSingle(),
+    supabase.from('response_sessions').select('*').eq('user_id', user.id).eq('status', 'in_progress').limit(1).maybeSingle(),
+    supabase.from('profile_vectors').select('dimension_slug, normalized_score').eq('user_id', user.id),
+  ]);
 
-  const { data: inProgressSession } = await supabase
-    .from('response_sessions')
-    .select('*')
-    .eq('user_id', user.id)
-    .eq('status', 'in_progress')
-    .limit(1)
-    .maybeSingle();
-
-  // scores logic for V2
-  const { data: myVectors } = await supabase
-    .from('profile_vectors')
-    .select('dimension_slug, normalized_score')
-    .eq('user_id', user.id);
+  const inProgressSession = inProgressSessionResult.data;
+  const myVectors = myVectorsResult.data;
 
   let questionnaireStatus: 'not_started' | 'in_progress' | 'completed' = 'not_started';
   let questionnaireProgress = 0;
@@ -179,21 +188,13 @@ export async function getDashboardData(): Promise<DashboardData> {
     questionnaireProgress = (inProgressSession as any).progress_percentage || 0;
   }
 
-  // Calculate scores from profile_vectors (V2)
-  let scores: { conexion: number; cuidado: number; choque: number; camino: number } | null = null;
-  
-  if (myVectors && myVectors.length > 0) {
-    // 1. Fetch partner vectors if available
-    let partnerVectors: any[] = [];
-    if (partnerId) {
-      const { data: pv } = await admin
-        .from('profile_vectors')
-        .select('dimension_slug, normalized_score')
-        .eq('user_id', partnerId);
-      partnerVectors = pv || [];
-    }
+  // Reuse myVectors for onboarding check (no duplicate query)
+  const onboardingCompleted = !!(myVectors && myVectors.length > 0);
 
-    // 2. Aggregate both profiles
+  // Phase 4: Score calculation
+  let scores: { conexion: number; cuidado: number; choque: number; camino: number } | null = null;
+
+  if (myVectors && myVectors.length > 0) {
     const layerTotals: Record<string, number> = { conexion: 0, cuidado: 0, choque: 0, camino: 0 };
     const layerCounts: Record<string, number> = { conexion: 0, cuidado: 0, choque: 0, camino: 0 };
 
@@ -202,10 +203,8 @@ export async function getDashboardData(): Promise<DashboardData> {
         const dimInfo = V2_DIMENSION_MAP[v.dimension_slug];
         if (dimInfo) {
           let score = v.normalized_score ?? 0;
-          // Invert conflict (choque) logic: high score in DB = high tension = low health
-          // So we invert it for the dashboard dashboard status display
           if (dimInfo.layer === 'choque') {
-             score = 100 - score;
+            score = 100 - score;
           }
           layerTotals[dimInfo.layer] += score;
           layerCounts[dimInfo.layer]++;
@@ -226,16 +225,7 @@ export async function getDashboardData(): Promise<DashboardData> {
     };
   }
 
-  // Check V2 onboarding completion
-  const { data: profileVectorRows } = await supabase
-    .from('profile_vectors')
-    .select('id')
-    .eq('user_id', user.id)
-    .limit(1);
-
-  const onboardingCompleted = !!(profileVectorRows && profileVectorRows.length > 0);
-
-  // Get weekly plan
+  // Phase 5: Weekly plan
   let weeklyPlan = null;
   if (couple) {
     const { data: plan } = await supabase
@@ -264,63 +254,10 @@ export async function getDashboardData(): Promise<DashboardData> {
     }
   }
 
-  // Calculate weeks active
   const createdAt = profile?.created_at || user.created_at;
   const weeksActive = Math.max(1, Math.floor(
     (new Date().getTime() - new Date(createdAt).getTime()) / (1000 * 60 * 60 * 24 * 7)
   ));
-
-  // 5. Get Daily Tip
-  let dailyTip = null;
-  if (couple) {
-    dailyTip = await getDailyTip();
-  }
-
-  // 6. Get Active Challenge
-  let activeChallenge = null;
-  if (couple) {
-    const { data: challengeAssoc } = await supabase
-      .from('challenge_assignments')
-      .select('challenge_id, status, weekly_challenges(title, dimension)')
-      .eq('couple_id', couple.id)
-      .eq('status', 'active')
-      .limit(1)
-      .single();
-
-    if (challengeAssoc && challengeAssoc.weekly_challenges) {
-      activeChallenge = {
-        id: challengeAssoc.challenge_id,
-        title: (challengeAssoc.weekly_challenges as any).title,
-        dimension: (challengeAssoc.weekly_challenges as any).dimension,
-      };
-    }
-  }
-
-  // 7. Get Upcoming Milestones
-  let upcomingMilestones: any[] = [];
-  if (couple) {
-    const { data: milestones } = await supabase
-      .from('milestones')
-      .select('id, title, date, milestone_type')
-      .eq('couple_id', couple.id)
-      .gte('date', new Date().toISOString().split('T')[0])
-      .order('date', { ascending: true })
-      .limit(2);
-      
-    if (milestones) {
-      upcomingMilestones = milestones;
-    }
-  }
-
-  // 8. Generate or Fetch Daily Insight (AI Summary)
-  let dashboardInsight = null;
-  if (couple) {
-    try {
-      dashboardInsight = await getDashboardInsight();
-    } catch (err) {
-      console.log('Failed to fetch dashboard insight', err);
-    }
-  }
 
   return {
     user: {
@@ -338,9 +275,92 @@ export async function getDashboardData(): Promise<DashboardData> {
     onboardingCompleted,
     weeklyPlan,
     weeksActive,
+  };
+}
+
+export async function getDashboardEnrichment(coupleId: string | null): Promise<DashboardEnrichmentData> {
+  if (!coupleId) {
+    return {
+      dailyTip: null,
+      dashboardInsight: null,
+      activeChallenge: null,
+      upcomingMilestones: [],
+      conocernos: null,
+    };
+  }
+
+  const supabase = await createClient();
+
+  // All 5 enrichment calls are independent — fire in parallel with AI timeouts
+  const [
+    dailyTip,
+    activeChallengeResult,
+    milestonesResult,
+    dashboardInsight,
+    conocernosData,
+  ] = await Promise.all([
+    withTimeout(getDailyTip(), AI_TIMEOUT_MS),
+    supabase
+      .from('challenge_assignments')
+      .select('challenge_id, status, weekly_challenges(title, dimension)')
+      .eq('couple_id', coupleId)
+      .eq('status', 'active')
+      .limit(1)
+      .single(),
+    supabase
+      .from('milestones')
+      .select('id, title, date, milestone_type')
+      .eq('couple_id', coupleId)
+      .gte('date', new Date().toISOString().split('T')[0])
+      .order('date', { ascending: true })
+      .limit(2),
+    withTimeout(getDashboardInsight(), AI_TIMEOUT_MS),
+    (async () => {
+      try {
+        const { getOrCreateDailyQuestion } = await import('./(protected)/jugar/conocernos/actions');
+        return await getOrCreateDailyQuestion();
+      } catch {
+        return null;
+      }
+    })(),
+  ]);
+
+  const activeChallenge = activeChallengeResult.data && (activeChallengeResult.data as any).weekly_challenges
+    ? {
+        id: (activeChallengeResult.data as any).challenge_id,
+        title: (activeChallengeResult.data as any).weekly_challenges.title,
+        dimension: (activeChallengeResult.data as any).weekly_challenges.dimension,
+      }
+    : null;
+
+  const upcomingMilestones = milestonesResult.data || [];
+
+  let conocernos = null;
+  if (conocernosData) {
+    conocernos = {
+      dailyId: conocernosData.id,
+      questionText: conocernosData.questionText,
+      hasAnswered: conocernosData.hasAnswered,
+      partnerHasAnswered: conocernosData.partnerHasAnswered,
+      isRevealed: conocernosData.isRevealed,
+      revealAt: conocernosData.revealAt,
+    };
+  }
+
+  return {
     dailyTip,
     dashboardInsight,
     activeChallenge,
     upcomingMilestones,
+    conocernos,
   };
+}
+
+/**
+ * Legacy: get full dashboard data in one call (backwards compatibility)
+ */
+export async function getDashboardData(): Promise<DashboardData> {
+  const core = await getDashboardCore();
+  const enrichment = await getDashboardEnrichment(core.couple?.id ?? null);
+  return { ...core, ...enrichment };
 }

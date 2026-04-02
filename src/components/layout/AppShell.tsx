@@ -25,7 +25,7 @@ export function AppShell({ children, showNav = true }: AppShellProps) {
     <div className="min-h-screen" style={{ background: 'var(--color-base)' }}>
       <TopHeader />
       <IconRail />
-      <main className="pb-24 lg:pb-0 lg:ml-16 mx-auto max-w-md lg:max-w-7xl px-4 md:px-6 lg:px-12 pt-8 lg:pt-12">
+      <main className="pb-28 lg:pb-0 lg:ml-16 mx-auto max-w-lg lg:max-w-7xl px-5 md:px-6 lg:px-12 pt-6 lg:pt-10">
         {children}
       </main>
       <FloatingNav />

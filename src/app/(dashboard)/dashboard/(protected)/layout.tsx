@@ -10,6 +10,6 @@ export default async function ProtectedDashboardLayout({
   await requireDashboardAccess();
 
   return (
-    <>{children}</>
+    <div className='pt-15'>{children}</div>
   );
 }

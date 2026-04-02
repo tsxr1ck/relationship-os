@@ -5,6 +5,7 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { GoogleGenAI } from '@google/genai';
 import { V2_DIMENSION_MAP } from '@/lib/scoring';
 import { revalidatePath } from 'next/cache';
+import { logActivityEvent } from '@/app/(dashboard)/dashboard/(protected)/notifications/actions';
 
 // ─── Types ────────────────────────────────────────────────────
 
@@ -353,6 +354,16 @@ export async function startChallenge(challengeId: string): Promise<{ success: bo
 
   if (error) throw new Error('Error al comenzar el reto: ' + error.message);
 
+  const { data: challenge } = await supabase
+    .from('weekly_challenges')
+    .select('title')
+    .eq('id', challengeId)
+    .single();
+
+  await logActivityEvent('challenge.started', 'challenge_assignment', assignment.id, {
+    challenge_title: challenge?.title || 'Un reto',
+  });
+
   // Generate AI coaching for this challenge
   let coaching: string | null = null;
   try {
@@ -383,6 +394,24 @@ export async function completeChallenge(assignmentId: string): Promise<{ success
     .eq('id', assignmentId);
 
   if (error) throw new Error('Error al completar el reto');
+
+  const { data: assignment } = await supabase
+    .from('challenge_assignments')
+    .select('challenge_id')
+    .eq('id', assignmentId)
+    .single();
+
+  if (assignment) {
+    const { data: challenge } = await supabase
+      .from('weekly_challenges')
+      .select('title')
+      .eq('id', assignment.challenge_id)
+      .single();
+
+    await logActivityEvent('challenge.completed', 'challenge_assignment', assignmentId, {
+      challenge_title: challenge?.title || 'Un reto',
+    });
+  }
 
   revalidatePath('/dashboard/retos');
   revalidatePath('/dashboard');

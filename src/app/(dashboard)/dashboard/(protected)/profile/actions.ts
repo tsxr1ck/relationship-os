@@ -5,6 +5,7 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { GoogleGenAI } from '@google/genai';
 import { V2_DIMENSION_MAP } from '@/lib/scoring';
 import { revalidatePath } from 'next/cache';
+import { logActivityEvent } from '@/app/(dashboard)/dashboard/(protected)/notifications/actions';
 
 // ─── Types ────────────────────────────────────────────────────
 
@@ -149,6 +150,10 @@ export async function updateProfile(data: {
     console.error('Error updating profile:', error);
     throw new Error('Error al actualizar el perfil: ' + error.message);
   }
+
+  await logActivityEvent('profile.updated', 'profile', user.id, {
+    partner_name: data.fullName || 'Tu pareja',
+  });
 
   revalidatePath('/dashboard');
   revalidatePath('/dashboard/profile');
@@ -361,6 +366,18 @@ export async function requestNicknameSharing(): Promise<{ myConsent: boolean; bo
   const allUserIds = (members || []).map(m => m.user_id);
   const bothConsented = allUserIds.length === 2 && allUserIds.every(id => consent[id] === true);
 
+  if (consent[user.id] === true && !bothConsented) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('full_name')
+      .eq('id', user.id)
+      .single();
+
+    await logActivityEvent('nickname.requested', 'couple', membership.couple_id, {
+      partner_name: profile?.full_name || 'Tu pareja',
+    });
+  }
+
   revalidatePath('/dashboard/profile');
 
   return { myConsent: consent[user.id], bothConsented };
@@ -406,6 +423,16 @@ export async function updateSharedNickname(nickname: string): Promise<{ success:
     .from('couples')
     .update({ shared_nickname: nickname || null, updated_at: new Date().toISOString() })
     .eq('id', membership.couple_id);
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('full_name')
+    .eq('id', user.id)
+    .single();
+
+  await logActivityEvent('nickname.accepted', 'couple', membership.couple_id, {
+    partner_name: profile?.full_name || 'Tu pareja',
+  });
 
   revalidatePath('/dashboard/profile');
   return { success: true };

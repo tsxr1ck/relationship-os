@@ -12,6 +12,7 @@ export interface Profile {
   avatar_url: string | null;
   locale: string;
   timezone: string;
+  last_seen_at: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -227,3 +228,72 @@ export interface CoupleStatusView {
   completed_activities: number;
   last_plan_week: string | null;
 }
+
+export interface ActivityEvent {
+  id: string;
+  couple_id: string;
+  actor_id: string;
+  event_type: string;
+  entity_type: string | null;
+  entity_id: string | null;
+  metadata: Json;
+  created_at: string;
+}
+
+export interface Notification {
+  id: string;
+  user_id: string;
+  event_id: string | null;
+  title: string;
+  body: string;
+  icon: string;
+  action_url: string | null;
+  is_read: boolean;
+  created_at: string;
+}
+
+export interface NotificationPreference {
+  id: string;
+  user_id: string;
+  event_type: string;
+  enabled: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export type NotificationEventType =
+  | 'app.opened'
+  | 'conocernos.answered'
+  | 'conocernos.revealed'
+  | 'conocernos.reacted'
+  | 'plan.completed'
+  | 'plan.created'
+  | 'challenge.completed'
+  | 'challenge.started'
+  | 'historia.created'
+  | 'historia.revealed'
+  | 'profile.updated'
+  | 'questionnaire.completed'
+  | 'couple.joined'
+  | 'milestone.created'
+  | 'nickname.requested'
+  | 'nickname.accepted';
+
+export const NOTIFICATION_EVENT_LABELS: Record<NotificationEventType, string> = {
+  'app.opened': 'App - Abrió la app',
+  'conocernos.answered': 'Conocernos - Respuesta del día',
+  'conocernos.revealed': 'Conocernos - Revelación de respuestas',
+  'conocernos.reacted': 'Conocernos - Reacción a respuesta',
+  'plan.completed': 'Plan - Actividad completada',
+  'plan.created': 'Plan - Nuevo plan semanal',
+  'challenge.completed': 'Reto - Reto completado',
+  'challenge.started': 'Reto - Reto iniciado',
+  'historia.created': 'Historia - Nuevo recuerdo',
+  'historia.revealed': 'Historia - Recuerdo revelado',
+  'profile.updated': 'Perfil - Actualización',
+  'questionnaire.completed': 'Evaluación - Completada',
+  'couple.joined': 'Pareja - Se unió',
+  'milestone.created': 'Hito - Nuevo hito',
+  'nickname.requested': 'Apodo - Solicitud',
+  'nickname.accepted': 'Apodo - Aceptado',
+};

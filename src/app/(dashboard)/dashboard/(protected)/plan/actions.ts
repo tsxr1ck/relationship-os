@@ -5,6 +5,7 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { GoogleGenAI } from '@google/genai';
 import { V2_DIMENSION_MAP } from '@/lib/scoring';
 import { revalidatePath } from 'next/cache';
+import { logActivityEvent } from '@/app/(dashboard)/dashboard/(protected)/notifications/actions';
 
 // ─── Types ────────────────────────────────────────────────────
 
@@ -201,6 +202,20 @@ export async function togglePlanItem(itemId: string): Promise<{ newStatus: strin
     .eq('id', itemId);
 
   if (error) throw new Error('Error actualizando la actividad');
+
+  if (newStatus === 'completed') {
+    const { data: fullItem } = await supabase
+      .from('weekly_plan_items')
+      .select('title, couple_id')
+      .eq('id', itemId)
+      .single();
+
+    if (fullItem) {
+      await logActivityEvent('plan.completed', 'weekly_plan_item', itemId, {
+        activity_title: fullItem.title,
+      });
+    }
+  }
 
   revalidatePath('/dashboard/plan');
   revalidatePath('/dashboard');
