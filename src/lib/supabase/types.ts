@@ -261,6 +261,15 @@ export interface NotificationPreference {
   updated_at: string;
 }
 
+export interface PushSubscription {
+  id: string;
+  user_id: string;
+  endpoint: string;
+  auth: string;
+  p256dh: string;
+  created_at: string;
+}
+
 export type NotificationEventType =
   | 'app.opened'
   | 'conocernos.answered'

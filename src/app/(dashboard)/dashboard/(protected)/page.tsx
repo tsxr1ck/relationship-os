@@ -306,6 +306,41 @@ export default function HoyPage() {
         )}
 
       </div>
+
+      {/* Floating Test Button */}
+      <button
+        onClick={() => {
+          try {
+            if (typeof window !== 'undefined' && 'Notification' in window) {
+              if (Notification.permission === 'granted') {
+                const n = new Notification('Test de Push', { body: 'Las notificaciones nativas están funcionando 🎉' });
+                n.onclick = () => alert('Notificación clickeada!');
+                alert('Notificación enviada. Revisá el centro de notificaciones de tu sistema.');
+              } else if (Notification.permission === 'denied') {
+                alert('PERMISO DENEGADO 🚫: Tu navegador tiene bloqueadas las alertas para esta web. Debes ir a los ajustes del navegador, buscar "Notificaciones" y permitir este sitio.');
+              } else {
+                Notification.requestPermission().then(p => {
+                  if (p === 'granted') {
+                    new Notification('Test de Push', { body: 'Permiso otorgado. ¡Funcionan! 🎉' });
+                    alert('¡Permiso otorgado! La notificación se acaba de lanzar.');
+                  } else {
+                    alert('El usuario resolvió el recuadro con: ' + p);
+                  }
+                }).catch(err => {
+                  alert('Error al pedir permiso: ' + err.message);
+                });
+              }
+            } else {
+              alert('ERROR LATAL: El objeto Window o Notification no existe en este navegador.');
+            }
+          } catch (e: any) {
+             alert('Excepción detectada: ' + e.message);
+          }
+        }}
+        className="fixed bottom-20 right-4 md:bottom-8 md:right-8 z-50 rounded-full px-4 py-2.5 bg-ai text-base shadow-[0px_0px_20px_rgba(216,154,91,0.4)] font-bold cursor-pointer hover:bg-ai/90 border-2 border-base/30"
+      >
+        🔔 Test Push
+      </button>
     </AppShell>
   );
 }

@@ -34,6 +34,17 @@ export function useNotificationRealtime() {
             body: (newNotif.body as string) || '',
             createdAt: (newNotif.created_at as string) || '',
           });
+          
+          // Fire native Desktop/Mobile Push if backgrounded & permissions granted
+          if (
+            typeof Notification !== 'undefined' &&
+            Notification.permission === 'granted'
+          ) {
+            new Notification((newNotif.title as string) || 'Relatinship OS', {
+              body: (newNotif.body as string) || '',
+            });
+          }
+
           window.dispatchEvent(new StorageEvent('storage', { key: 'notification-update' }));
         }
       )
